@@ -1,12 +1,60 @@
-// pages/AddNewVehicle.tsx
+"use client"
+
+import { useState } from "react";
 import React from "react";
 import InputField from "@/components/InputField/InputField";
 import Button from "@/components/Button/Button";
+import API from "@/database/apiList";
 
 export default function AddNewVehicle() {
+  const vehicleAPI = API.vehicleList;
+  
+  const [vehicleModule, setVehicleModule] = useState("");
+  const [SoKhungModule, setSoKhungModule] = useState("");
+  const [HangModule, setHangModule] = useState("");
+  const [BienSoModule, setBienSoModule] = useState("");
+  const [NhienLoaiModule, setNhienLoaiModule] = useState("");
+  const [NamModule, setNamModule] = useState("");
+  const [LoaiXeModule, setLoaiXeModule] = useState("");
+  const [MauSacModule, setMauSacModule] = useState("");
+  const [apiError, setApiError] = useState("");
+
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch(vehicleAPI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          vehicleModule,
+          SoKhungModule,
+          HangModule,
+          BienSoModule,
+          NhienLoaiModule,
+          NamModule,
+          LoaiXeModule,
+          MauSacModule,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+
+      alert("Vehicle added successfully");
+    } catch (error) {
+      if (error instanceof Error) {
+        setApiError(error.message);
+      } else {
+        setApiError("An unknown error occurred");
+      }
+    }
+  }
+  
   return (
     <div className="flex flex-col gap-9">
-      <div className="inline-flex w-full flex-col gap-6">
+      <form onSubmit={handleSubmit} className="inline-flex w-full flex-col gap-6">
         <div className="grid grid-cols-2 gap-5">
           <div className="inline-flex flex-col gap-6">
             <InputField label="Registration number" />
@@ -37,7 +85,7 @@ export default function AddNewVehicle() {
             <InputField label="Valid until" />
           </div>
         </div>
-      </div>
+      </form>
       <div className="inline-flex w-full flex-row justify-between">
         <Button
           variant="outline"
