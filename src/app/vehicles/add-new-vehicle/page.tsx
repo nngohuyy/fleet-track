@@ -8,16 +8,22 @@ import API from "@/database/apiList";
 
 export default function AddNewVehicle() {
   const vehicleAPI = API.vehicleList;
-  
-  const [vehicleModule, setVehicleModule] = useState("");
-  const [SoKhungModule, setSoKhungModule] = useState("");
-  const [HangModule, setHangModule] = useState("");
-  const [BienSoModule, setBienSoModule] = useState("");
-  const [NhienLoaiModule, setNhienLoaiModule] = useState("");
-  const [NamModule, setNamModule] = useState("");
-  const [LoaiXeModule, setLoaiXeModule] = useState("");
-  const [MauSacModule, setMauSacModule] = useState("");
   const [apiError, setApiError] = useState("");
+  
+  const [registrationNumber, setRegistrationNumber] = useState("");
+  const [type, setType] = useState("");
+  const [mark, setMark] = useState("");
+  const [engineNumber, setEngineNumber] = useState("");
+  const [typeOfFuel, setTypeOfFuel] = useState("");
+  const [engineDisplacement, setEngineDisplacement] = useState("");
+  const [vinNumber, setVinNumber] = useState("");
+  const [model, setModel] = useState("");
+  const [chassisNumber, setChassisNumber] = useState("");
+  const [manufactureYear, setManufactureYear] = useState("");
+  const [manufactureCountry, setManufactureCountry] = useState("");
+  const [inspectionReportNumber, setInspectionReportNumber] = useState("");
+  const [dateOfIssue, setDateOfIssue] = useState("");
+  const [validUntil, setValidUntil] = useState("");
 
   const handleSubmit = async () => {
     try {
@@ -27,14 +33,20 @@ export default function AddNewVehicle() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          vehicleModule,
-          SoKhungModule,
-          HangModule,
-          BienSoModule,
-          NhienLoaiModule,
-          NamModule,
-          LoaiXeModule,
-          MauSacModule,
+          registrationNumber,
+          type,
+          mark,
+          engineNumber,
+          typeOfFuel,
+          engineDisplacement,
+          vinNumber,
+          model,
+          chassisNumber,
+          manufactureYear,
+          manufactureCountry,
+          inspectionReportNumber,
+          dateOfIssue,
+          validUntil,
         }),
       });
 
@@ -54,35 +66,94 @@ export default function AddNewVehicle() {
   
   return (
     <div className="flex flex-col gap-9">
+      {apiError && <p>{apiError}</p>}
       <form onSubmit={handleSubmit} className="inline-flex w-full flex-col gap-6">
         <div className="grid grid-cols-2 gap-5">
           <div className="inline-flex flex-col gap-6">
-            <InputField label="Registration number" />
+            <InputField
+              label="Registration number"
+              value={registrationNumber}
+              onChange={(e) => setRegistrationNumber(e.target.value)}
+            />
             <div className="w-full inline-flex flex-row gap-4">
-              <InputField label="Type" />
-              <InputField label="Mark" />
+              <InputField
+                label="Type"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+              />
+              <InputField
+                label="Mark"
+                value={mark}
+                onChange={(e) => setMark(e.target.value)}
+              />
             </div>
-            <InputField label="Engine number" />
+            <InputField
+              label="Engine number"
+              value={engineNumber}
+              onChange={(e) => setEngineNumber(e.target.value)}
+            />
             <div className="w-full inline-flex flex-row gap-4">
-              <InputField label="Type of fuel" />
-              <InputField label="Engine displacement" />
+              <InputField
+                label="Type of fuel"
+                value={typeOfFuel}
+                onChange={(e) => setTypeOfFuel(e.target.value)}
+              />
+              <InputField
+                label="Engine displacement"
+                value={engineDisplacement}
+                onChange={(e) => setEngineDisplacement(e.target.value)}
+              />
             </div>
           </div>
           <div className="inline-flex flex-col gap-6">
-            <InputField label="VIN number" />
-            <InputField label="Model" />
-            <InputField label="Chassis number" />
+            <InputField
+              label="VIN number"
+              value={vinNumber}
+              onChange={(e) => setVinNumber(e.target.value)}
+            />
+            <InputField
+              label="Model"
+              value={model}
+              onChange={(e) => setModel(e.target.value)}
+            />
+            <InputField
+              label="Chassis number"
+              value={chassisNumber}
+              onChange={(e) => setChassisNumber(e.target.value)}
+            />
             <div className="w-full inline-flex flex-row gap-4 items-end">
-              <InputField label="Manufacture" placeholder="Year" />
-              <InputField label="" placeholder="Country" />
+              <InputField
+                label="Manufacture"
+                placeholder="Year"
+                value={manufactureYear}
+                onChange={(e) => setManufactureYear(e.target.value)}
+              />
+              <InputField
+                label=""
+                placeholder="Country"
+                value={manufactureCountry}
+                onChange={(e) => setManufactureCountry(e.target.value)}
+              />
             </div>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-5">
-          <InputField label="Inspection report number" />
+          <InputField
+            label="Inspection report number"
+            value={inspectionReportNumber}
+            onChange={(e) => setInspectionReportNumber(e.target.value)}
+          />
           <div className="w-full inline-flex flex-row gap-4">
-            <InputField label="Date of issue" />
-            <InputField label="Valid until" />
+            <InputField
+              label="Date of issue"
+              value={dateOfIssue}
+              onChange={(e) => setDateOfIssue(e.target.value)}
+            />
+            <InputField
+              label="Valid until"
+              value={validUntil}
+              onChange={(e) => setValidUntil(e.target.value)}
+            />
           </div>
         </div>
       </form>
@@ -90,33 +161,37 @@ export default function AddNewVehicle() {
         <Button
           variant="outline"
           color="success"
-          size="lg"
+          size="md"
           radius="full"
           startContent={<span className="material-symbols-rounded">document_scanner</span>}
           // isFullWidth
           isDisabled={false}
-          // onClick={() => alert("Button clicked")}
+          onClick={() => {}}
         >
-          Submit
+          Scan inspection certificate
         </Button>
 
         <div className="inline-flex flex-row gap-2">
-          <a
-            className="rounded-full w-fit border border-solid border-black/[.08] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="/vehicles/add-new-vehicle"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Button
+            variant="outline"
+            color="error"
+            size="md"
+            radius="full"
+            isDisabled={false}
+            onClick={() => {}}
           >
             Cancel
-          </a>
-          <a
-            className="rounded-full w-fit border border-solid border-black/[.08] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="/vehicles/add-new-vehicle"
-            target="_blank"
-            rel="noopener noreferrer"
+          </Button>
+          <Button
+            variant="solid"
+            color="primary"
+            size="md"
+            radius="full"
+            isDisabled={false}
+            onClick={handleSubmit}
           >
-            Add
-          </a>
+            Add vehicle
+          </Button>
         </div>
       </div>
     </div>
