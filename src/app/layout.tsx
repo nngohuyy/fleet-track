@@ -37,8 +37,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="flex h-screen">
-          <SideBar />
-          <main className="flex-grow min-h-screen">
+          {/* Sidebar with fixed position */}
+          <aside className="fixed top-0 left-0 w-64 h-full">
+            <SideBar />
+          </aside>
+
+          {/* Main content area, with padding to account for the fixed sidebar */}
+          <main className="flex-grow ml-64 h-full overflow-y-auto pb-8">
             {children}
           </main>
         </div>

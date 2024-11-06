@@ -2,7 +2,7 @@ import Link from "next/link"
 
 export default function SideBar() {
   return (
-    <div className="w-[256px] h-[100dvh] bg-[#F8FAFD] px-3 py-7 inline-flex flex-col justify-between">
+    <div className="w-full h-full bg-[#F8FAFD] px-3 py-7 inline-flex flex-col justify-between">
       <div className="inline-flex flex-col gap-8">
         <span className="material-symbols-rounded rounded-full w-fit px-4 py-2.5 hover:bg-[#DADADA]">close</span>
         <div className="inline-flex flex-col">

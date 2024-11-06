@@ -2,14 +2,17 @@
 
 import { useState } from "react";
 import React from "react";
+import { useRouter } from "next/navigation";
 import InputField from "@/components/InputField/InputField";
 import Button from "@/components/Button/Button";
 import API from "@/database/apiList";
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 
 export default function AddNewVehicle() {
   const vehicleAPI = API.vehicleList;
+  const router = useRouter();
   const [apiError, setApiError] = useState("");
-  
+
   const [registrationNumber, setRegistrationNumber] = useState("");
   const [type, setType] = useState("");
   const [mark, setMark] = useState("");
@@ -24,6 +27,13 @@ export default function AddNewVehicle() {
   const [inspectionReportNumber, setInspectionReportNumber] = useState("");
   const [dateOfIssue, setDateOfIssue] = useState("");
   const [validUntil, setValidUntil] = useState("");
+
+  const [showModal, setShowModal] = useState(false);
+
+  const handleConfirmCancel = () => {
+    setShowModal(false);
+    router.push("/vehicles");
+  }
 
   const handleSubmit = async () => {
     try {
@@ -63,7 +73,7 @@ export default function AddNewVehicle() {
       }
     }
   }
-  
+
   return (
     <div className="flex flex-col gap-9">
       {apiError && <p>{apiError}</p>}
@@ -160,25 +170,25 @@ export default function AddNewVehicle() {
       <div className="inline-flex w-full flex-row justify-between">
         <Button
           variant="outline"
-          color="success"
+          // color="success"
           size="md"
           radius="full"
           startContent={<span className="material-symbols-rounded">document_scanner</span>}
           // isFullWidth
           isDisabled={false}
-          onClick={() => {}}
+          onClick={() => { }}
         >
           Scan inspection certificate
         </Button>
 
         <div className="inline-flex flex-row gap-2">
           <Button
-            variant="outline"
+            variant="ghost"
             color="error"
             size="md"
             radius="full"
             isDisabled={false}
-            onClick={() => {}}
+            onClick={() => setShowModal(true)}
           >
             Cancel
           </Button>
@@ -192,6 +202,14 @@ export default function AddNewVehicle() {
           >
             Add vehicle
           </Button>
+          {showModal && (
+            <ConfirmationModal
+              title="Are you sure?"
+              message="Do you really want to cancel the adding process? This action cannot be undone."
+              onConfirm={() => handleConfirmCancel()}
+              onCancel={() => setShowModal(false)}
+            />
+          )}
         </div>
       </div>
     </div>
