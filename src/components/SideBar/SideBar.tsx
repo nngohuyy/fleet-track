@@ -6,18 +6,22 @@ export default function SideBar() {
       <div className="inline-flex flex-col gap-8">
         <span className="material-symbols-rounded rounded-full w-fit px-4 py-2.5 hover:bg-[#DADADA]">close</span>
         <div className="inline-flex flex-col">
-          <div className="px-4 py-2.5 rounded-full inline-flex gap-5 hover:bg-[#DADADA]">
+          <Link className="px-4 py-2.5 rounded-full inline-flex gap-5 hover:bg-[#DADADA]" href={'/'}>
             <span className="material-symbols-rounded">home</span>
-            Trips
-          </div>
+            Home
+          </Link>
           <Link className="px-4 py-2.5 rounded-full inline-flex gap-5 hover:bg-[#DADADA]" href={'/vehicles'}>
             <span className="material-symbols-rounded">transportation</span>
             Vehicles
           </Link>
-          <div className="px-4 py-2.5 rounded-full inline-flex gap-5 hover:bg-[#DADADA]">
+          <Link className="px-4 py-2.5 rounded-full inline-flex gap-5 hover:bg-[#DADADA]" href={'/trips'}>
             <span className="material-symbols-rounded">assistant_direction</span>
             Trips
-          </div>
+          </Link>
+          <Link className="px-4 py-2.5 rounded-full inline-flex gap-5 hover:bg-[#DADADA]" href={'/drivers'}>
+            <span className="material-symbols-rounded">person</span>
+            Drivers
+          </Link>
         </div>
       </div>
       <div className="inline-flex flex-col">
