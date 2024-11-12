@@ -94,14 +94,18 @@ const columns = [
     key: "model",
     title: "Model",
   },
+  // {
+  //   key: "manufactureYear",
+  //   title: "Manufacture Year",
+  // },
+  // {
+  //   key: "manufactureCountry",
+  //   title: "Manufacture Country",
+  // },
   {
-    key: "manufactureYear",
-    title: "Manufacture Year",
-  },
-  {
-    key: "manufactureCountry",
-    title: "Manufacture Country",
-  },
+    key: "action",
+    title: "Action",
+  }
 ]
 
 const data = { vehicleList, columns };
