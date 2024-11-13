@@ -1,11 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import axios from "axios";
+import { ring } from 'ldrs';
 import Button from "@/components/Button/Button";
 import Link from "next/link";
 import data from "@/database/vehicleList";
 import API from "@/database/apiList";
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
+
+ring.register('spinner-ring');
 
 interface Column {
   key: string;
@@ -39,10 +44,18 @@ export default function VehiclePage() {
   const vehicleAPI = API.vehicleList;
   const [searchTerm, setSearchTerm] = useState("");
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [apiError, setApiError] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
   const TableRow = ({ vehicle }: { vehicle: Vehicle }) => (
     <tr className="border-b border-gray-200 hover:bg-gray-100">
-      <td className="py-3 px-4 text-left">{vehicle?.id}</td>
+      <td className="py-3 px-4 text-left">
+        <Link href={`/vehicles/${vehicle.id}`}>
+          {vehicle?.id}
+        </Link>
+      </td>
       <td className="py-3 px-4 text-left">{vehicle?.registrationNumber}</td>
       <td className="py-3 px-4 text-left">{vehicle?.type}</td>
       <td className="py-3 px-4 text-left">{vehicle?.mark}</td>
@@ -66,7 +79,7 @@ export default function VehiclePage() {
             </span>
           </Button>
         </Link>
-        <Link href={`/vehicles/${vehicle.id}`}>
+        <Link href={`/vehicles/edit-vehicle/${vehicle.id}`}>
           <Button
             variant="ghost"
             color="primary"
@@ -86,7 +99,10 @@ export default function VehiclePage() {
           size="sm"
           radius="full"
           isIconOnly
-          onClick={() => handleDelete(vehicle.id)}
+          onClick={() => {
+            setSelectedId(vehicle.id);
+            setShowModal(true);
+          }}
         >
           <span className="material-symbols-rounded">
             delete
@@ -116,27 +132,36 @@ export default function VehiclePage() {
       try {
         const response = await axios.get(vehicleAPI);
         setVehicles(response.data);
-        console.log(response.data);
+        setIsLoading(false);
       } catch (error) {
         if (error instanceof Error) {
           setApiError(error.message);
+          setIsLoading(false);
         } else {
           setApiError("An unknown error occurred");
+          setIsLoading(false);
         }
       }
     };
     fetchVehicles();
-  }, []);
+  }, [vehicleAPI]);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async () => {
+    if (!selectedId) return;
+    setIsLoading(true);
     try {
-      await axios.delete(`${vehicleAPI}/${id}`);
-      setVehicles(vehicles.filter((vehicle) => vehicle.id !== id));
+      setShowModal(false);
+      await axios.delete(`${vehicleAPI}/${selectedId}`);
+      setSelectedId(null);
+      setVehicles(vehicles.filter((vehicle) => vehicle.id !== selectedId));
+      setIsLoading(false);
     } catch (error) {
       if (error instanceof Error) {
         setApiError(error.message);
+        setIsLoading(false);
       } else {
         setApiError("An unknown error occurred");
+        setIsLoading(false);
       }
     }
   }
@@ -170,17 +195,47 @@ export default function VehiclePage() {
         <table className="w-full">
           <TableHeader columns={data.columns} />
           <tbody>
-            {filteredVehicles && filteredVehicles.length > 0 ? (
-              filteredVehicles.map((vehicle, index) => (
-                <TableRow key={index} vehicle={vehicle} />
-              ))
-            ) : (
-              <tr>
-                <td className="align-middle text-center h-40" colSpan={data.columns.length}>No vehicles available</td>
-              </tr>
-            )}
+            {
+              isLoading ? (
+                <tr>
+                  <td className="align-middle text-center h-40" colSpan={data.columns.length}>
+                    <spinner-ring
+                      size="40"
+                      stroke="5"
+                      bg-opacity="0"
+                      speed="2"
+                      color="black"
+                    ></spinner-ring>
+                  </td>
+                </tr>
+              ) : (
+                filteredVehicles && filteredVehicles.length > 0 ? (
+                  filteredVehicles.map((vehicle, index) => (
+                    <TableRow key={index} vehicle={vehicle} />
+                  ))
+                ) : (
+                  <tr>
+                    <td className="align-middle text-center h-40" colSpan={data.columns.length}>
+                      <spinner-ring
+                        size="40"
+                        stroke="5"
+                        bg-opacity="0"
+                        speed="2"
+                        color="black"
+                      ></spinner-ring>
+                    </td>
+                  </tr>
+                ))}
           </tbody>
         </table>
+        {showModal && (
+          <ConfirmationModal
+            title="Are you sure?"
+            message="Do you really want to delete? This action cannot be undone."
+            onConfirm={handleDelete}
+            onCancel={() => setShowModal(false)}
+          />
+        )}
       </div>
     </div>
   )

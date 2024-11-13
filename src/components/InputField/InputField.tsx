@@ -5,10 +5,11 @@ interface InputFieldProps {
   placeholder?: string;
   type?: string;
   value?: string;
+  defaultValue?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function InputField({ label, placeholder, type, value, onChange }: InputFieldProps) {
+export default function InputField({ label, placeholder, type, value, defaultValue, onChange }: InputFieldProps) {
   return (
     <div className="w-full inline-flex flex-col gap-1">
       <p>{label}</p>
@@ -17,6 +18,7 @@ export default function InputField({ label, placeholder, type, value, onChange }
         type={type}
         placeholder={placeholder}
         value={value}
+        defaultValue={defaultValue}
         onChange={onChange}
       />
     </div>

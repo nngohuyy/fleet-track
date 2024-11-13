@@ -4,6 +4,8 @@ import Button from "@/components/Button/Button";
 interface ConfirmationModalProps {
   title: string;
   message: string;
+  confirmText?: string;
+  cancelText?: string;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -11,6 +13,8 @@ interface ConfirmationModalProps {
 export default function ConfirmationModal({
   title,
   message,
+  confirmText,
+  cancelText,
   onConfirm,
   onCancel,
 }: ConfirmationModalProps) {
@@ -21,10 +25,10 @@ export default function ConfirmationModal({
         <p className="text-gray-600 mb-6">{message}</p>
         <div className="flex justify-end gap-4">
           <Button variant="ghost" color="error" size="md" onClick={onConfirm}>
-            Yes, Cancel
+            {confirmText || "Yes, Delete"}
           </Button>
           <Button variant="outline" color="primary" size="md" onClick={onCancel}>
-            No, Go Back
+            {cancelText || "Cancel"}
           </Button>
         </div>
       </div>

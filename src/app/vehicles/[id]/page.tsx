@@ -2,16 +2,20 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ring } from 'ldrs';
 import { useParams } from 'next/navigation';
 import API from '@/database/apiList';
 import Button from '@/components/Button/Button';
 import Link from 'next/link';
+
+ring.register('spinner-ring');
 
 interface Vehicle {
   id: string;
   registrationNumber: string;
   type: string;
   mark: string;
+  engineNumber: string;
   typeOfFuel: string;
   engineDisplacement: number;
   vinNumber: string;
@@ -51,7 +55,13 @@ export default function VehicleDetailsPage() {
 
   return (
     isLoading ? (
-      <div>Loading...</div>
+      <spinner-ring
+        size="40"
+        stroke="5"
+        bg-opacity="0"
+        speed="2"
+        color="black"
+      ></spinner-ring>
     ) : (
       <div>
         <h1 className="text-xl font-semibold">Vehicle Details</h1>
@@ -63,6 +73,7 @@ export default function VehicleDetailsPage() {
               <p><strong>Registration Number:</strong> {vehicle.registrationNumber}</p>
               <p><strong>Type:</strong> {vehicle.type}</p>
               <p><strong>Mark:</strong> {vehicle.mark}</p>
+              <p><strong>Engine Number:</strong> {vehicle.engineNumber}</p>
               <p><strong>Fuel Type:</strong> {vehicle.typeOfFuel}</p>
               <p><strong>Engine Displacement:</strong> {vehicle.engineDisplacement}</p>
               <p><strong>VIN Number:</strong> {vehicle.vinNumber}</p>
@@ -78,7 +89,7 @@ export default function VehicleDetailsPage() {
         </div>
         <div className="mt-4">
           {vehicle && (
-            <Link href={`/vehicles/edit/${vehicle.id}`}>
+            <Link href={`/vehicles/edit-vehicle/${vehicle.id}`}>
               <Button variant="outline" color="primary" size="md" radius="full">
                 Edit Vehicle
               </Button>
