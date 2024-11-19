@@ -37,6 +37,10 @@ const columns = [
     key: "distance",
     title: "Distance",
   },
+  {
+    key: "actions",
+    title: "Actions",
+  }
 ]
 
 const data = { tripList, columns };

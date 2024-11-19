@@ -268,9 +268,7 @@ export default function EditVehicle() {
               </div>
             </div>
           </div>
-
-        )
-      }
+        )}
     </div>
   );
 }

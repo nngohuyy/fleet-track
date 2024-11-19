@@ -32,6 +32,10 @@ const columns = [
   {
     key: "phoneNumber",
     title: "Phone Number",
+  },
+  {
+    key: "actions",
+    title: "Actions",
   }
 ]
 

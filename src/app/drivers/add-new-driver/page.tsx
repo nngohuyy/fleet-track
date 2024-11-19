@@ -8,7 +8,7 @@ import Button from "@/components/Button/Button";
 import API from "@/database/apiList";
 import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 
-export default function AddNewVehicle() {
+export default function AddNewDriver() {
   const driverAPI = API.driverList;
   const router = useRouter();
   const [apiError, setApiError] = useState("");
