@@ -46,62 +46,67 @@ export default function TripPage() {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const TableRow = ({ trip }: { trip: Trip }) => (
-    <tr className="border-b border-gray-200 hover:bg-gray-100">
-      <td className="py-3 px-4 text-left">{trip?.id}</td>
-      <td className="py-3 px-4 text-left">{trip?.vehicleId}</td>
-      <td className="py-3 px-4 text-left">{trip?.driverId}</td>
-      <td className="py-3 px-4 text-left">{trip?.startLocation}</td>
-      <td className="py-3 px-4 text-left">{trip?.endLocation}</td>
-      <td className="py-3 px-4 text-left">{trip?.startTime}</td>
-      <td className="py-3 px-4 text-left">{trip?.endTime}</td>
-      <td className="py-3 px-4 text-left">{trip?.distance}</td>
-      <td className="py-3 px-4 flex flex-row">
-        <Link href={`/trips/${trip.id}`}>
-          <Button
-            variant="ghost"
-            color="primary"
-            size="sm"
-            radius="full"
-            isIconOnly
-          >
-            <span className="material-symbols-rounded">
-              visibility
-            </span>
-          </Button>
-        </Link>
-        <Link href={`/trips/edit-trip/${trip.id}`}>
-          <Button
-            variant="ghost"
-            color="primary"
-            size="sm"
-            radius="full"
-            isIconOnly
-          >
-            <span className="material-symbols-rounded">
-              edit
-            </span>
-          </Button>
-        </Link>
-        {/* create a delete button */}
-        <Button
-          variant="ghost"
-          color="primary"
-          size="sm"
-          radius="full"
-          isIconOnly
-          onClick={() => {
-            setSelectedId(trip.id);
-            setShowModal(true);
-          }}
+  const TableRow = ({ trip }: { trip: Trip }) => {
+    const navigateToDetail = () => {
+      window.location.href = `/trips/${trip.id}`;
+    };
+
+    return (
+      <tr
+        className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
+        onClick={navigateToDetail}
+      >
+        <td className="py-3 px-4 text-left">{trip?.id}</td>
+        <td className="py-3 px-4 text-left">{trip?.vehicleId}</td>
+        <td className="py-3 px-4 text-left">{trip?.driverId}</td>
+        <td className="py-3 px-4 text-left">{trip?.startLocation}</td>
+        <td className="py-3 px-4 text-left">{trip?.endLocation}</td>
+        <td className="py-3 px-4 text-left">{trip?.startTime}</td>
+        <td className="py-3 px-4 text-left">{trip?.endTime}</td>
+        <td className="py-3 px-4 text-left">{trip?.distance}</td>
+        <td
+          className="py-3 px-4 flex flex-row"
+          onClick={(e) => e.stopPropagation()} // Prevents triggering row click for this cell
         >
-          <span className="material-symbols-rounded">
-            delete
-          </span>
-        </Button>
-      </td>
-    </tr>
-  );
+          <Link href={`/trips/${trip.id}`}>
+            <Button
+              variant="ghost"
+              color="primary"
+              size="sm"
+              radius="full"
+              isIconOnly
+            >
+              <span className="material-symbols-rounded">visibility</span>
+            </Button>
+          </Link>
+          <Link href={`/trips/edit-trip/${trip.id}`}>
+            <Button
+              variant="ghost"
+              color="primary"
+              size="sm"
+              radius="full"
+              isIconOnly
+            >
+              <span className="material-symbols-rounded">edit</span>
+            </Button>
+          </Link>
+          <Button
+            variant="ghost"
+            color="primary"
+            size="sm"
+            radius="full"
+            isIconOnly
+            onClick={() => {
+              setSelectedId(trip.id);
+              setShowModal(true);
+            }}
+          >
+            <span className="material-symbols-rounded">delete</span>
+          </Button>
+        </td>
+      </tr>
+    );
+  };
 
   const filteredTrips = trips.filter((trip) => {
     return (

@@ -27,6 +27,7 @@ export default function AddNewVehicle() {
   const [inspectionReportNumber, setInspectionReportNumber] = useState("");
   const [dateOfIssue, setDateOfIssue] = useState("");
   const [validUntil, setValidUntil] = useState("");
+  const [status, setStatus] = useState("available");
 
   const [showModal, setShowModal] = useState(false);
 
@@ -57,6 +58,7 @@ export default function AddNewVehicle() {
           inspectionReportNumber,
           dateOfIssue,
           validUntil,
+          status,
         }),
       });
 

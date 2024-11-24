@@ -68,40 +68,24 @@ const columns = [
   },
   {
     key: "registrationNumber",
-    title: "Registration Number",
+    title: "Registration Number", // 51K-12345, 51K-54321, etc.
+  },
+  {
+    key: "status",
+    title: "Status", // default: available; in use, under maintenance
   },
   {
     key: "type",
-    title: "Type",
+    title: "Type", // car, truck, motorcycle, etc.
   },
   {
     key: "mark",
-    title: "Mark",
-  },
-  {
-    key: "typeOfFuel",
-    title: "Type of Fuel",
-  },
-  {
-    key: "engineDisplacement",
-    title: "Engine Displacement",
-  },
-  {
-    key: "vinNumber",
-    title: "VIN Number",
+    title: "Mark", // Toyota, Honda, etc.
   },
   {
     key: "model",
-    title: "Model",
+    title: "Model", // Camry, Civic, etc.
   },
-  // {
-  //   key: "manufactureYear",
-  //   title: "Manufacture Year",
-  // },
-  // {
-  //   key: "manufactureCountry",
-  //   title: "Manufacture Country",
-  // },
   {
     key: "action",
     title: "Action",

@@ -7,6 +7,7 @@ import InputField from "@/components/InputField/InputField";
 import Button from "@/components/Button/Button";
 import API from "@/database/apiList";
 import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
+import VehicleDropdown from "./VehicleDropdown";
 
 export default function AddNewVehicle() {
   const tripAPI = API.tripList;
@@ -65,11 +66,12 @@ export default function AddNewVehicle() {
       {apiError && <p>{apiError}</p>}
       <form onSubmit={handleSubmit} className="inline-flex w-full flex-col gap-6">
         <div className="grid grid-cols-2 gap-5">
-          <InputField
-            label="Vehicle ID"
+          {/* <InputField
+            label="Registration number"
             value={vehicleId}
             onChange={(e) => setVehicleId(e.target.value)}
-          />
+          /> */}
+          <VehicleDropdown />
           <InputField
             label="Driver ID"
             value={driverId}
