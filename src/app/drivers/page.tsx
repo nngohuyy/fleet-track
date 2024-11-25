@@ -8,6 +8,7 @@ import Link from "next/link";
 import data from "@/database/driverList";
 import API from "@/database/apiList";
 import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
+import { Driver } from "@/database/interface";
 
 ring.register('spinner-ring');
 
@@ -26,18 +27,84 @@ const TableHeader = ({ columns }: { columns: Column[] }) => (
   </thead>
 );
 
-interface Driver {
-  id: string;
-  name: string;
-  idNumber: string;
-  sex: string;
-  dateOfBirth: string;
-  homeAddress: string;
-  phoneNumber: string;
-}
+const TableRow = (driver: Driver) => (
+  <tr className="border-b border-gray-200 hover:bg-gray-100">
+    <td className="py-3 px-4 text-left">{driver?.id}</td>
+    <td className="py-3 px-4 text-left">{driver?.name}</td>
+    {
+      driver?.isDriving ? (
+        <td className="py-3 px-4 text-left font-normal ">
+            <div className="flex w-fit h-7 px-2.5 rounded-full items-center text-red-900 bg-red-100">
+              <i className="material-symbols-rounded-18">
+                dangerous
+              </i>
+              <span className="pl-1.5">Currently</span>
+            </div>
+          </td>
+      ) : (
+        <td className="py-3 px-4 text-left font-normal ">
+            <div className="flex w-fit h-7 px-2.5 rounded-full items-center text-green-900 bg-green-100">
+              <i className="material-symbols-rounded-18">
+                check
+              </i>
+              <span className="pl-1.5">Free</span>
+            </div>
+          </td>
+      )
+    }
+    <td className="py-3 px-4 text-left">{driver?.idNumber}</td>
+    <td className="py-3 px-4 text-left">{driver?.sex}</td>
+    <td className="py-3 px-4 text-left">{driver?.dateOfBirth}</td>
+    <td className="py-3 px-4 text-left">{driver?.homeAddress}</td>
+    <td className="py-3 px-4 text-left">{driver?.phoneNumber}</td>
+    <td className="py-3 px-4 flex flex-row">
+      <Link href={`/drivers/${driver.id}`}>
+        <Button
+          variant="ghost"
+          color="primary"
+          size="sm"
+          radius="full"
+          isIconOnly
+        >
+          <span className="material-symbols-rounded">
+            visibility
+          </span>
+        </Button>
+      </Link>
+      <Link href={`/drivers/edit-driver/${driver.id}`}>
+        <Button
+          variant="ghost"
+          color="primary"
+          size="sm"
+          radius="full"
+          isIconOnly
+        >
+          <span className="material-symbols-rounded">
+            edit
+          </span>
+        </Button>
+      </Link>
+      {/* create a delete button */}
+      <Button
+        variant="ghost"
+        color="primary"
+        size="sm"
+        radius="full"
+        isIconOnly
+        onClick={() => {
+          setSelectedId(driver.id);
+          setShowModal(true);
+        }}
+      >
+        <span className="material-symbols-rounded">
+          delete
+        </span>
+      </Button>
+    </td>
+  </tr>
+);
 
 export default function DriverPage() {
-  const driverAPI = API.driverList;
   const [searchTerm, setSearchTerm] = useState("");
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -45,61 +112,6 @@ export default function DriverPage() {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const TableRow = ({ driver }: { driver: Driver }) => (
-    <tr className="border-b border-gray-200 hover:bg-gray-100">
-      <td className="py-3 px-4 text-left">{driver?.id}</td>
-      <td className="py-3 px-4 text-left">{driver?.name}</td>
-      <td className="py-3 px-4 text-left">{driver?.idNumber}</td>
-      <td className="py-3 px-4 text-left">{driver?.sex}</td>
-      <td className="py-3 px-4 text-left">{driver?.dateOfBirth}</td>
-      <td className="py-3 px-4 text-left">{driver?.homeAddress}</td>
-      <td className="py-3 px-4 text-left">{driver?.phoneNumber}</td>
-      <td className="py-3 px-4 flex flex-row">
-        <Link href={`/drivers/${driver.id}`}>
-          <Button
-            variant="ghost"
-            color="primary"
-            size="sm"
-            radius="full"
-            isIconOnly
-          >
-            <span className="material-symbols-rounded">
-              visibility
-            </span>
-          </Button>
-        </Link>
-        <Link href={`/drivers/edit-driver/${driver.id}`}>
-          <Button
-            variant="ghost"
-            color="primary"
-            size="sm"
-            radius="full"
-            isIconOnly
-          >
-            <span className="material-symbols-rounded">
-              edit
-            </span>
-          </Button>
-        </Link>
-        {/* create a delete button */}
-        <Button
-          variant="ghost"
-          color="primary"
-          size="sm"
-          radius="full"
-          isIconOnly
-          onClick={() => {
-            setSelectedId(driver.id);
-            setShowModal(true);
-          }}
-        >
-          <span className="material-symbols-rounded">
-            delete
-          </span>
-        </Button>
-      </td>
-    </tr>
-  );
 
   const filteredDrivers = drivers.filter((driver) => {
     return (
@@ -116,7 +128,7 @@ export default function DriverPage() {
   useEffect(() => {
     const fetchDrivers = async () => {
       try {
-        const response = await axios.get(driverAPI);
+        const response = await axios.get(API.driverList);
         setDrivers(response.data);
         setIsLoading(false);
       } catch (error) {
@@ -129,15 +141,16 @@ export default function DriverPage() {
         }
       }
     };
+
     fetchDrivers();
-  }, [driverAPI]);
+  });
 
   const handleDelete = async () => {
     if (!selectedId) return;
     setIsLoading(true);
     try {
       setShowModal(false);
-      await axios.delete(`${driverAPI}/${selectedId}`);
+      await axios.delete(`${API.driverList}/${selectedId}`);
       setSelectedId(null);
       setDrivers(drivers.filter((driver) => driver.id !== selectedId));
       setIsLoading(false);
@@ -197,7 +210,7 @@ export default function DriverPage() {
               ) : (
                 filteredDrivers && filteredDrivers.length > 0 ? (
                   filteredDrivers.map((driver, index) => (
-                    <TableRow key={index} driver={driver} />
+                    <TableRow key={index} {...driver} />
                   ))
                 ) : (
                   <tr>

@@ -2,27 +2,42 @@
 
 import { useState } from "react";
 import React from "react";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import InputField from "@/components/InputField/InputField";
 import Button from "@/components/Button/Button";
 import API from "@/database/apiList";
 import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 import VehicleDropdown from "./VehicleDropdown";
+import DriverDropdown from "./DriverDropdown";
 
 export default function AddNewVehicle() {
   const tripAPI = API.tripList;
   const router = useRouter();
   const [apiError, setApiError] = useState("");
 
-  const [vehicleId, setVehicleId] = useState("");
-  const [driverId, setDriverId] = useState("");
-  const [startLocation, setStartLocation] = useState("");
-  const [endLocation, setEndLocation] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [distance, setDistance] = useState(0);
+  const [tripData, setTripData] = useState({
+    vehicleId: "",
+    driverId: "",
+    startLocation: "",
+    endLocation: "",
+    startTime: "",
+    endTime: "",
+    distance: 0,
+    status: "pending",
+  });
+
+  console.log(tripData);
 
   const [showModal, setShowModal] = useState(false);
+
+  const handleVehicleSelect = (vehicleId: string) => {
+    setTripData((prev) => ({ ...prev, vehicleId }));
+  };
+
+  const handleDriverSelect = (driverId: string) => {
+    setTripData((prev) => ({ ...prev, driverId }));
+  };
 
   const handleConfirmCancel = () => {
     setShowModal(false);
@@ -31,35 +46,17 @@ export default function AddNewVehicle() {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch(tripAPI, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          vehicleId,
-          driverId,
-          startLocation,
-          endLocation,
-          startTime,
-          endTime,
-          distance,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
-
+      await axios.post(tripAPI, tripData);
+  
       alert("Trip added successfully");
     } catch (error) {
-      if (error instanceof Error) {
-        setApiError(error.message);
+      if (axios.isAxiosError(error)) {
+        setApiError(error.response?.data?.message || error.message);
       } else {
         setApiError("An unknown error occurred");
       }
     }
-  }
+  };
 
   return (
     <div className="flex flex-col gap-9">
@@ -71,41 +68,37 @@ export default function AddNewVehicle() {
             value={vehicleId}
             onChange={(e) => setVehicleId(e.target.value)}
           /> */}
-          <VehicleDropdown />
-          <InputField
-            label="Driver ID"
-            value={driverId}
-            onChange={(e) => setDriverId(e.target.value)}
-          />
+          <VehicleDropdown onVehicleSelect={handleVehicleSelect}  />
+          <DriverDropdown onDriverSelect={handleDriverSelect} />
         </div>
         <div className="grid grid-cols-2 gap-5">
           <InputField
             label="Start location"
-            value={startLocation}
-            onChange={(e) => setStartLocation(e.target.value)}
+            value={tripData.startLocation}
+            onChange={(e) => setTripData({ ...tripData, startLocation: e.target.value })}
           />
           <InputField
             label="End location"
-            value={endLocation}
-            onChange={(e) => setEndLocation(e.target.value)}
+            value={tripData.endLocation}
+            onChange={(e) => setTripData({ ...tripData, endLocation: e.target.value })}
           />
         </div>
         <div className="grid grid-cols-2 gap-5">
           <InputField
             label="Start time"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
+            value={tripData.startTime}
+            onChange={(e) => setTripData({ ...tripData, startTime: e.target.value })}
           />
           <InputField
             label="End time"
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
+            value={tripData.endTime}
+            onChange={(e) => setTripData({ ...tripData, endTime: e.target.value })}
           />
         </div>
         <InputField
           label="Distance"
-          value={distance.toString()}
-          onChange={(e) => setDistance(Number(e.target.value))}
+          value={tripData.distance.toString()}
+          onChange={(e) => setTripData({ ...tripData, distance: parseInt(e.target.value) })}
         />
       </form>
       <div className="inline-flex w-full flex-row justify-end">

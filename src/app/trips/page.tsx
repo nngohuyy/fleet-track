@@ -8,6 +8,7 @@ import Link from "next/link";
 import data from "@/database/tripList";
 import API from "@/database/apiList";
 import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
+import { Trip } from "@/database/interface";
 
 ring.register('spinner-ring');
 
@@ -26,16 +27,67 @@ const TableHeader = ({ columns }: { columns: Column[] }) => (
   </thead>
 );
 
-interface Trip {
-  id: string;
-  vehicleId: string;
-  driverId: string;
-  startLocation: string;
-  endLocation: string;
-  startTime: string;
-  endTime: string;
-  distance: number;
-}
+const TableRow = ({trip} : {trip: Trip}) => {
+  const navigateToDetail = () => {
+    window.location.href = `/trips/${trip.id}`;
+  };
+
+  return (
+    <tr
+      className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
+      onClick={navigateToDetail}
+    >
+      <td className="py-3 px-4 text-left">{trip?.id}</td>
+      <td className="py-3 px-4 text-left">{trip?.vehicleId}</td>
+      <td className="py-3 px-4 text-left">{trip?.driverId}</td>
+      <td className="py-3 px-4 text-left">{trip?.startLocation}</td>
+      <td className="py-3 px-4 text-left">{trip?.endLocation}</td>
+      <td className="py-3 px-4 text-left">{trip?.startTime}</td>
+      <td className="py-3 px-4 text-left">{trip?.endTime}</td>
+      <td className="py-3 px-4 text-left">{trip?.distance}</td>
+      <td
+        className="py-3 px-4 flex flex-row"
+        onClick={(e) => e.stopPropagation()} // Prevents triggering row click for this cell
+      >
+        <Link href={`/trips/${trip.id}`}>
+          <Button
+            variant="ghost"
+            color="primary"
+            size="sm"
+            radius="full"
+            isIconOnly
+          >
+            <span className="material-symbols-rounded">visibility</span>
+          </Button>
+        </Link>
+        <Link href={`/trips/edit-trip/${trip.id}`}>
+          <Button
+            variant="ghost"
+            color="primary"
+            size="sm"
+            radius="full"
+            isIconOnly
+          >
+            <span className="material-symbols-rounded">edit</span>
+          </Button>
+        </Link>
+        <Button
+          variant="ghost"
+          color="primary"
+          size="sm"
+          radius="full"
+          isIconOnly
+          onClick={() => {
+            setSelectedId(trip.id);
+            setShowModal(true);
+          }}
+        >
+          <span className="material-symbols-rounded">delete</span>
+        </Button>
+      </td>
+    </tr>
+  );
+};
 
 export default function TripPage() {
   const tripAPI = API.tripList;
@@ -45,68 +97,6 @@ export default function TripPage() {
   const [apiError, setApiError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
-  const TableRow = ({ trip }: { trip: Trip }) => {
-    const navigateToDetail = () => {
-      window.location.href = `/trips/${trip.id}`;
-    };
-
-    return (
-      <tr
-        className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
-        onClick={navigateToDetail}
-      >
-        <td className="py-3 px-4 text-left">{trip?.id}</td>
-        <td className="py-3 px-4 text-left">{trip?.vehicleId}</td>
-        <td className="py-3 px-4 text-left">{trip?.driverId}</td>
-        <td className="py-3 px-4 text-left">{trip?.startLocation}</td>
-        <td className="py-3 px-4 text-left">{trip?.endLocation}</td>
-        <td className="py-3 px-4 text-left">{trip?.startTime}</td>
-        <td className="py-3 px-4 text-left">{trip?.endTime}</td>
-        <td className="py-3 px-4 text-left">{trip?.distance}</td>
-        <td
-          className="py-3 px-4 flex flex-row"
-          onClick={(e) => e.stopPropagation()} // Prevents triggering row click for this cell
-        >
-          <Link href={`/trips/${trip.id}`}>
-            <Button
-              variant="ghost"
-              color="primary"
-              size="sm"
-              radius="full"
-              isIconOnly
-            >
-              <span className="material-symbols-rounded">visibility</span>
-            </Button>
-          </Link>
-          <Link href={`/trips/edit-trip/${trip.id}`}>
-            <Button
-              variant="ghost"
-              color="primary"
-              size="sm"
-              radius="full"
-              isIconOnly
-            >
-              <span className="material-symbols-rounded">edit</span>
-            </Button>
-          </Link>
-          <Button
-            variant="ghost"
-            color="primary"
-            size="sm"
-            radius="full"
-            isIconOnly
-            onClick={() => {
-              setSelectedId(trip.id);
-              setShowModal(true);
-            }}
-          >
-            <span className="material-symbols-rounded">delete</span>
-          </Button>
-        </td>
-      </tr>
-    );
-  };
 
   const filteredTrips = trips.filter((trip) => {
     return (
@@ -144,7 +134,7 @@ export default function TripPage() {
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        const response = await axios.get(tripAPI);
+        const response = await axios.get(API.tripList);
         setTrips(response.data);
         setIsLoading(false);
       } catch (error) {
@@ -157,8 +147,9 @@ export default function TripPage() {
         }
       }
     };
+
     fetchVehicles();
-  }, [tripAPI]);
+  });
 
   return (
     <div>

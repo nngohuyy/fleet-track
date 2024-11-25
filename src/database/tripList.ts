@@ -1,3 +1,5 @@
+import { title } from "process";
+
 const tripList = [
   {
 
@@ -10,12 +12,16 @@ const columns = [
     title: "ID",
   },
   {
-    key: "vehicleId",
-    title: "Vehicle ID",
+    key: "registrationNumber", // fetch by vehicleID
+    title: "Registration Number",
   },
   {
-    key: "driverId",
-    title: "Driver ID",
+    key: "driverName", // fetch by driverID
+    title: "Driver's Name",
+  },
+  {
+    key: "status",
+    title: "Status", // isDriving: true/false
   },
   {
     key: "startLocation",
@@ -30,13 +36,13 @@ const columns = [
     title: "Start Time",
   },
   {
-    key: "endTime",
+    key: "endTime", // default: null, updated when driver hit finish trip
     title: "End Time",
   },
-  {
-    key: "distance",
-    title: "Distance",
-  },
+  // {
+  //   key: "distance",
+  //   title: "Distance",
+  // },
   {
     key: "actions",
     title: "Actions",

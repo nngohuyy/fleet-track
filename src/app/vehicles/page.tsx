@@ -29,6 +29,7 @@ const TableHeader = ({ columns }: { columns: Column[] }) => (
 interface Vehicle {
   id: string;
   registrationNumber: string;
+  status: string;
   type: string;
   mark: string;
   typeOfFuel: string;
@@ -56,15 +57,45 @@ export default function VehiclePage() {
         </Link>
       </td>
       <td className="py-3 px-4 text-left">{vehicle?.registrationNumber}</td>
+      {
+        vehicle?.status === "available" ? (
+          <td className="py-3 px-4 text-left font-normal ">
+            <div className="flex w-fit h-7 px-2.5 rounded-full items-center text-green-900 bg-green-100">
+              <i className="material-symbols-rounded-18">
+                check
+              </i>
+              <span className="pl-1.5">{vehicle?.status}</span>
+            </div>
+          </td>
+        ) : vehicle?.status === "in use" ? (
+          <td className="py-3 px-4 text-left">
+            <div className="flex w-fit h-7 px-2.5 rounded-full items-center text-red-900 bg-red-100">
+              <i className="material-symbols-rounded-18">
+                dangerous
+              </i>
+              <span className="pl-1.5">{vehicle?.status}</span>
+            </div>
+          </td>
+        ) : (
+          <td className="py-3 px-4 text-left">
+            <div className="flex w-fit h-7 px-2.5 rounded-full items-center text-yellow-900 bg-yellow-100">
+              <i className="material-symbols-rounded-18">
+                handyman
+              </i>
+              <span className="pl-1.5">{vehicle?.status}</span>
+            </div>
+          </td>
+        )
+      }
       <td className="py-3 px-4 text-left">{vehicle?.type}</td>
       <td className="py-3 px-4 text-left">{vehicle?.mark}</td>
-      <td className="py-3 px-4 text-left">{vehicle?.typeOfFuel}</td>
-      <td className="py-3 px-4 text-left">{vehicle?.engineDisplacement}</td>
-      <td className="py-3 px-4 text-left">{vehicle?.vinNumber}</td>
+      {/* <td className="py-3 px-4 text-left">{vehicle?.typeOfFuel}</td> */}
+      {/* <td className="py-3 px-4 text-left">{vehicle?.engineDisplacement}</td> */}
+      {/* <td className="py-3 px-4 text-left">{vehicle?.vinNumber}</td> */}
       <td className="py-3 px-4 text-left">{vehicle?.model}</td>
       {/* <td className="py-3 px-4 text-left">{vehicle?.manufactureYear}</td> */}
       {/* <td className="py-3 px-4 text-left">{vehicle?.manufactureCountry}</td> */}
-      <td className="py-3 px-4 flex flex-row">
+      <td className="py-3 px-4 flex flex-row gap-1.5">
         <Link href={`/vehicles/${vehicle.id}`}>
           <Button
             variant="ghost"

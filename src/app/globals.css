@@ -28,3 +28,12 @@ body {
     'opsz' 24;
   font-family: 'Material Symbols Rounded';
 }
+
+.material-symbols-rounded-18 {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 18;
+  font-family: 'Material Symbols Rounded';
+}

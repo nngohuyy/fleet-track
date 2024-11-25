@@ -14,6 +14,10 @@ const columns = [
     title: "Name",
   },
   {
+    key: "isDriving",
+    title: "Driving Status",
+  },
+  {
     key: "idNumber",
     title: "ID Number",
   },
