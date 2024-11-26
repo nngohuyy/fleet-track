@@ -9,6 +9,12 @@ exports.register = async (req, res) => {
   try {
     const { name, username, password, email, cccd } = req.body;
 
+    // Validate required fields
+    if (!name || !username || !password || !email || !cccd) {
+      return res.status(400).json({ message: 'All fields are required.' });
+    }
+
+    // Validate password
     if (!password.match(/^(?=.*[A-Z])(?=.*\d).{8,16}$/)) {
       return res.status(400).json({
         message: 'Password must be 8-16 characters long, include at least one uppercase letter and one number.',
@@ -25,10 +31,10 @@ exports.register = async (req, res) => {
       username,
       password,
       email,
-      imgAvatar: req.file ? req.file.buffer : undefined,
+      imgAvatar: '', // Ensure this is initialized if required
       cccd,
     });
-
+    console.log(req.body);
     await newUser.save();
     res.status(201).json({ message: 'User registered successfully.' });
   } catch (error) {

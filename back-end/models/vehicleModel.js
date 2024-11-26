@@ -16,12 +16,14 @@ const vehicleSchema = new mongoose.Schema({
     inspectionReportNumber: String,
     dateOfIssue: Date,
     validUntil: Date,
+    insurancePurchaseDate: Date, // Ngày mua bảo hiểm
+    insuranceExpirationDate: Date, // Ngày hết hạn bảo hiểm
     image: {
         data: Buffer,
         contentType: String
     },
-    id: String, // Optional: keep if needed
-    stt: Number // New field for sequential identifier
+    id: String,
+    stt: Number
 });
 
 // Pre-save hook to assign sequential stt

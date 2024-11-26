@@ -18,12 +18,14 @@ exports.createVehicle = async (req, res) => {
             inspectionReportNumber: req.body.inspectionReportNumber,
             dateOfIssue: req.body.dateOfIssue,
             validUntil: req.body.validUntil,
+            insurancePurchaseDate: req.body.insurancePurchaseDate, // Nhận từ FE
+            insuranceExpirationDate: req.body.insuranceExpirationDate, // Nhận từ FE
             id: req.body.id,
             image: req.file ? {
                 data: req.file.buffer,
                 contentType: req.file.mimetype
             } : null
-        });
+        });        
         await newVehicle.save();
         res.status(201).send('Vehicle added successfully');
     } catch (error) {
@@ -77,9 +79,11 @@ exports.updateVehicle = async (req, res) => {
             inspectionReportNumber: req.body.inspectionReportNumber,
             dateOfIssue: req.body.dateOfIssue,
             validUntil: req.body.validUntil,
+            insurancePurchaseDate: req.body.insurancePurchaseDate, // Nhận từ FE
+            insuranceExpirationDate: req.body.insuranceExpirationDate, // Nhận từ FE
             id: req.body.id
         };
-
+        
         if (req.file) {
             updates.image = {
                 data: req.file.buffer,

@@ -1,13 +1,15 @@
-import { Button } from "@nextui-org/react"
-import Link from "next/link"
+'use client';
 
+import { Button } from "@nextui-org/react";
+import Link from "next/link";
+import { useRouter } from 'next/navigation';
 import {
   HiOutlineHome,
   HiOutlineTruck,
   HiOutlineMap,
   HiOutlineUser,
   HiOutlineCog6Tooth,
-  HiArrowRightStartOnRectangle,
+  HiArrowRightOnRectangle,
 } from "react-icons/hi2";
 
 type ButtonColor = "primary" | "default" | "secondary" | "success" | "warning" | "danger" | undefined;
@@ -41,24 +43,33 @@ const TopContent: { title: string; icon: JSX.Element; link: string; color: Butto
     color: "default",
     isDisabled: false,
   },
-]
-
-const BottomContent: { title: string; icon: JSX.Element; color: ButtonColor; isDisabled: boolean }[] = [
-  {
-    title: "Settings",
-    icon: <HiOutlineCog6Tooth size={24} />,
-    color: "default",
-    isDisabled: true,
-  },
-  {
-    title: "Log out",
-    icon: <HiArrowRightStartOnRectangle size={24} />,
-    color: "danger",
-    isDisabled: false,
-  }
-]
+];
 
 export default function SideBar() {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    document.cookie = "token=; path=/; max-age=0";
+    router.push('/sign-in');
+  };
+
+  const BottomContent = [
+    {
+      title: "Settings",
+      icon: <HiOutlineCog6Tooth size={24} />,
+      color: "default",
+      isDisabled: true,
+      handler: null,
+    },
+    {
+      title: "Log out",
+      icon: <HiArrowRightOnRectangle size={24} />,
+      color: "danger",
+      isDisabled: false,
+      handler: handleLogout, // Attach the log-out handler
+    },
+  ];
+
   return (
     <div id="sidebar" className="w-full h-full bg-[#F8FAFD] px-3 py-7 inline-flex flex-col justify-between">
       <div className="inline-flex flex-col gap-8">
@@ -66,7 +77,15 @@ export default function SideBar() {
         <div className="inline-flex flex-col">
           {TopContent.map((item, index) => (
             <Link href={item.link} key={index}>
-              <Button isDisabled={item.isDisabled} fullWidth radius="full" variant="light" color={item.color} startContent={item.icon} className="text-base gap-5 justify-start h-11">
+              <Button
+                isDisabled={item.isDisabled}
+                fullWidth
+                radius="full"
+                variant="light"
+                color={item.color}
+                startContent={item.icon}
+                className="text-base gap-5 justify-start h-11"
+              >
                 {item.title}
               </Button>
             </Link>
@@ -75,11 +94,21 @@ export default function SideBar() {
       </div>
       <div className="inline-flex flex-col">
         {BottomContent.map((item, index) => (
-          <Button isDisabled={item.isDisabled} fullWidth radius="full" variant="light" color={item.color} startContent={item.icon} className="text-base gap-5 justify-start h-11" key={index}>
+          <Button
+            key={index}
+            isDisabled={item.isDisabled}
+            fullWidth
+            radius="full"
+            variant="light"
+            color={item.color}
+            startContent={item.icon}
+            className="text-base gap-5 justify-start h-11"
+            onClick={item.handler || undefined} // Attach handler if present
+          >
             {item.title}
           </Button>
         ))}
       </div>
     </div>
-  )
+  );
 }

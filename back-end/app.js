@@ -10,7 +10,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:5173', // URL của frontend
+    origin: 'http://localhost:3000', // URL của frontend
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true, // Cho phép cookie và xác thực
 }));

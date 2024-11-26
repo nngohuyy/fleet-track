@@ -6,12 +6,12 @@ import "./globals.css";
 import SideBar from "@/components/SideBar/SideBar";
 
 const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
+  src: "../fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
 const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
+  src: "../fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
 });
@@ -37,20 +37,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* Add NextUIProvider */}
         <NextUIProvider>
-          <script
-            type="module"
-            defer
-            src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/spiral.js"
-          ></script>
           <div className="flex h-screen">
-            {/* Sidebar with fixed position */}
             <aside className="fixed top-0 left-0 w-64 h-full">
               <SideBar />
             </aside>
-
-            {/* Main content area, with padding to account for the fixed sidebar */}
             <main className="flex-grow ml-64 h-full overflow-y-auto pb-8">
               {children}
             </main>

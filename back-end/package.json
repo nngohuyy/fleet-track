@@ -1,19 +1,25 @@
 {
-  "name": "image-upload-project",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.21.1",
-    "image-upload-project": "file:",
-    "mongoose": "^8.8.0",
-    "multer": "^1.4.5-lts.1"
-  }
+    "name": "be-user",
+    "version": "1.0.0",
+    "description": "Backend for user management system",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js",
+        "dev": "nodemon app.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "keywords": [],
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "be-user": "file:",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.21.1",
+        "jsonwebtoken": "^9.0.2",
+        "mongodb": "^6.11.0",
+        "mongoose": "^8.8.2",
+        "multer": "^1.4.5-lts.1",
+        "nodemailer": "^6.9.16"
+    }
 }
