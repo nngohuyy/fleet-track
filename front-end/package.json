@@ -9,12 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@nextui-org/react": "^2.4.8",
     "axios": "^1.7.7",
+    "framer-motion": "^11.11.17",
     "ldrs": "^1.0.2",
     "next": "15.0.2",
     "papaparse": "^5.4.1",
-    "react": "19.0.0-rc-02c0e824-20241028",
-    "react-dom": "19.0.0-rc-02c0e824-20241028"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.2",
+    "react-icons": "^5.3.0"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -9,6 +9,7 @@ import InputField from "@/components/InputField/InputField";
 import Button from "@/components/Button/Button";
 import API from "@/database/apiList";
 import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
+import { Spinner } from "@nextui-org/react";
 
 interface Vehicle {
   id: string;
@@ -121,13 +122,9 @@ export default function EditVehicle() {
       {apiError && <p>{apiError}</p>}
       {
         isLoading ? (
-          <spinner-ring
-            size="40"
-            stroke="5"
-            bg-opacity="0"
-            speed="2"
-            color="black"
-          ></spinner-ring>
+          <div className="w-full h-56 flex justify-center items-center">
+            <Spinner size="lg" />
+          </div>
         ) : (
           <div className="flex flex-col gap-9">
             <form onSubmit={handleSubmit} className="inline-flex w-full flex-col gap-6">

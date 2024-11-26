@@ -1,263 +1,409 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import React from "react";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  Input,
+  Button,
+  DropdownTrigger,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+  Chip,
+  User,
+  Pagination,
+  Selection,
+  ChipProps,
+  SortDescriptor,
+  Tooltip,
+  Spinner,
+} from "@nextui-org/react";
+
 import axios from "axios";
-import { ring } from 'ldrs';
-import Button from "@/components/Button/Button";
-import Link from "next/link";
-import data from "@/database/vehicleList";
+import { useEffect } from "react";
+
 import API from "@/database/apiList";
+
+import { HiOutlinePlus as PlusIcon } from "react-icons/hi";
+import { BsChevronDown as ChevronDownIcon } from "react-icons/bs";
+import { HiOutlineSearch as SearchIcon } from "react-icons/hi";
+import { HiOutlinePencil as EditIcon } from "react-icons/hi";
+import { HiOutlineTrash as DeleteIcon } from "react-icons/hi";
+import { HiOutlineEye as EyeIcon } from "react-icons/hi";
+import { columns, vehicles, statusOptions } from "@/database/vehicleList";
+import { capitalize, replaceUnderscore } from "@/utils/utils";
 import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
+import Link from "next/link";
 
-ring.register('spinner-ring');
+const statusColorMap: Record<string, ChipProps["color"]> = {
+  available: "success",
+  in_use: "danger",
+  under_maintenance: "warning",
+};
 
-interface Column {
-  key: string;
-  title: string;
-}
+const INITIAL_VISIBLE_COLUMNS = ["mark", "registrationNumber", "status", "actions"];
 
-const TableHeader = ({ columns }: { columns: Column[] }) => (
-  <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
-    <tr className="py-3 px-6 text-left font-semibold">
-      {columns.map((column) => (
-        <th key={column.key} className="py-4 px-4 text-left font-semibold">{column.title}</th>
-      ))}
-    </tr>
-  </thead>
-);
-
-interface Vehicle {
-  id: string;
-  registrationNumber: string;
-  status: string;
-  type: string;
-  mark: string;
-  typeOfFuel: string;
-  engineDisplacement: number;
-  vinNumber: string;
-  model: string;
-  // manufactureYear: number;
-  // manufactureCountry: string;
-}
+type Vehicle = typeof vehicles[0];
 
 export default function VehiclePage() {
-  const vehicleAPI = API.vehicleList;
-  const [searchTerm, setSearchTerm] = useState("");
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [apiError, setApiError] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const TableRow = ({ vehicle }: { vehicle: Vehicle }) => (
-    <tr className="border-b border-gray-200 hover:bg-gray-100">
-      <td className="py-3 px-4 text-left">
-        <Link href={`/vehicles/${vehicle.id}`}>
-          {vehicle?.id}
-        </Link>
-      </td>
-      <td className="py-3 px-4 text-left">{vehicle?.registrationNumber}</td>
-      {
-        vehicle?.status === "available" ? (
-          <td className="py-3 px-4 text-left font-normal ">
-            <div className="flex w-fit h-7 px-2.5 rounded-full items-center text-green-900 bg-green-100">
-              <i className="material-symbols-rounded-18">
-                check
-              </i>
-              <span className="pl-1.5">{vehicle?.status}</span>
-            </div>
-          </td>
-        ) : vehicle?.status === "in use" ? (
-          <td className="py-3 px-4 text-left">
-            <div className="flex w-fit h-7 px-2.5 rounded-full items-center text-red-900 bg-red-100">
-              <i className="material-symbols-rounded-18">
-                dangerous
-              </i>
-              <span className="pl-1.5">{vehicle?.status}</span>
-            </div>
-          </td>
-        ) : (
-          <td className="py-3 px-4 text-left">
-            <div className="flex w-fit h-7 px-2.5 rounded-full items-center text-yellow-900 bg-yellow-100">
-              <i className="material-symbols-rounded-18">
-                handyman
-              </i>
-              <span className="pl-1.5">{vehicle?.status}</span>
-            </div>
-          </td>
-        )
-      }
-      <td className="py-3 px-4 text-left">{vehicle?.type}</td>
-      <td className="py-3 px-4 text-left">{vehicle?.mark}</td>
-      {/* <td className="py-3 px-4 text-left">{vehicle?.typeOfFuel}</td> */}
-      {/* <td className="py-3 px-4 text-left">{vehicle?.engineDisplacement}</td> */}
-      {/* <td className="py-3 px-4 text-left">{vehicle?.vinNumber}</td> */}
-      <td className="py-3 px-4 text-left">{vehicle?.model}</td>
-      {/* <td className="py-3 px-4 text-left">{vehicle?.manufactureYear}</td> */}
-      {/* <td className="py-3 px-4 text-left">{vehicle?.manufactureCountry}</td> */}
-      <td className="py-3 px-4 flex flex-row gap-1.5">
-        <Link href={`/vehicles/${vehicle.id}`}>
-          <Button
-            variant="ghost"
-            color="primary"
-            size="sm"
-            radius="full"
-            isIconOnly
-          >
-            <span className="material-symbols-rounded">
-              visibility
-            </span>
-          </Button>
-        </Link>
-        <Link href={`/vehicles/edit-vehicle/${vehicle.id}`}>
-          <Button
-            variant="ghost"
-            color="primary"
-            size="sm"
-            radius="full"
-            isIconOnly
-          >
-            <span className="material-symbols-rounded">
-              edit
-            </span>
-          </Button>
-        </Link>
-        {/* create a delete button */}
-        <Button
-          variant="ghost"
-          color="primary"
-          size="sm"
-          radius="full"
-          isIconOnly
-          onClick={() => {
-            setSelectedId(vehicle.id);
-            setShowModal(true);
-          }}
-        >
-          <span className="material-symbols-rounded">
-            delete
-          </span>
-        </Button>
-      </td>
-    </tr>
-  );
-
-  const filteredVehicles = vehicles.filter((vehicle) => {
-    return (
-      vehicle.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vehicle.registrationNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vehicle.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vehicle.mark.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vehicle.typeOfFuel.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vehicle.engineDisplacement.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vehicle.vinNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vehicle.model.toLowerCase().includes(searchTerm.toLowerCase()) // ||
-      // vehicle.manufactureYear.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-      // vehicle.manufactureCountry.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  const [filterValue, setFilterValue] = React.useState("");
+  const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
+  const [visibleColumns, setVisibleColumns] = React.useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
+  const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
+    column: "age",
+    direction: "ascending",
   });
+
+  const [vehicles, setVehicles] = React.useState<Vehicle[]>([]);
+  const [selectedId, setSelectedId] = React.useState<string | null>(null);
+  const [apiError, setApiError] = React.useState("");
+  const [showModal, setShowModal] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        const response = await axios.get(vehicleAPI);
+        const response = await axios.get(API.vehicleList);
         setVehicles(response.data);
-        setIsLoading(false);
       } catch (error) {
         if (error instanceof Error) {
           setApiError(error.message);
-          setIsLoading(false);
         } else {
           setApiError("An unknown error occurred");
-          setIsLoading(false);
         }
+      } finally {
+        setIsLoading(false);
       }
     };
+
     fetchVehicles();
-  }, [vehicleAPI]);
+  }, [API.vehicleList]);
 
   const handleDelete = async () => {
     if (!selectedId) return;
     setIsLoading(true);
     try {
-      setShowModal(false);
-      await axios.delete(`${vehicleAPI}/${selectedId}`);
-      setSelectedId(null);
+      await axios.delete(`${API.vehicleList}/${selectedId}`);
       setVehicles(vehicles.filter((vehicle) => vehicle.id !== selectedId));
-      setIsLoading(false);
     } catch (error) {
-      if (error instanceof Error) {
-        setApiError(error.message);
-        setIsLoading(false);
-      } else {
-        setApiError("An unknown error occurred");
-        setIsLoading(false);
-      }
+      setApiError(error instanceof Error ? error.message : "An unknown error occurred");
+    } finally {
+      setSelectedId(null); // Clear it here, after all operations
+      setShowModal(false); // Close the modal after the operation
+      setIsLoading(false);
     }
-  }
+  };
 
-  return (
-    <div>
-      <div className="flex justify-between">
-        <input
-          type="text"
-          placeholder="Search vehicles..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="mb-4 w-1/2 p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500"
-        />
-        <Link href="/vehicles/add-new-vehicle">
-          <Button
-            variant="outline"
-            color="primary"
-            size="md"
-            radius="full"
-            startContent={<span className="material-symbols-rounded">
-              add
-            </span>}
-          >
-            Add new
-          </Button>
-        </Link>
-      </div>
-      {apiError && <p>{apiError}</p>}
-      <div className="overflow-hidden rounded-lg shadow-md bg-white">
-        <table className="w-full">
-          <TableHeader columns={data.columns} />
-          <tbody>
-            {
-              isLoading ? (
-                <tr>
-                  <td className="align-middle text-center h-40" colSpan={data.columns.length}>
-                    <spinner-ring
-                      size="40"
-                      stroke="5"
-                      bg-opacity="0"
-                      speed="2"
-                      color="black"
-                    ></spinner-ring>
-                  </td>
-                </tr>
-              ) : (
-                filteredVehicles && filteredVehicles.length > 0 ? (
-                  filteredVehicles.map((vehicle, index) => (
-                    <TableRow key={index} vehicle={vehicle} />
-                  ))
-                ) : (
-                  <tr>
-                    <td className="align-middle text-center h-40" colSpan={data.columns.length}>
-                      <spinner-ring
-                        size="40"
-                        stroke="5"
-                        bg-opacity="0"
-                        speed="2"
-                        color="black"
-                      ></spinner-ring>
-                    </td>
-                  </tr>
+  const [page, setPage] = React.useState(1);
+
+  const hasSearchFilter = Boolean(filterValue);
+
+  const headerColumns = React.useMemo(() => {
+    if (visibleColumns === "all") return columns;
+
+    return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
+  }, [visibleColumns]);
+
+  const filteredItems = React.useMemo(() => {
+    let filteredvehicles = [...vehicles];
+
+    if (hasSearchFilter) {
+      filteredvehicles = filteredvehicles.filter((vehicle) =>
+        vehicle.mark.toLowerCase().includes(filterValue.toLowerCase()) ||
+        vehicle.model.toLowerCase().includes(filterValue.toLowerCase()) ||
+        vehicle.registrationNumber.toLowerCase().includes(filterValue.toLowerCase()),
+      );
+    }
+    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
+      filteredvehicles = filteredvehicles.filter((vehicle) =>
+        Array.from(statusFilter).includes(vehicle.status),
+      );
+    }
+
+    return filteredvehicles;
+  }, [vehicles, filterValue, statusFilter]);
+
+  const pages = Math.ceil(filteredItems.length / rowsPerPage);
+
+  const items = React.useMemo(() => {
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+
+    return filteredItems.slice(start, end);
+  }, [page, filteredItems, rowsPerPage]);
+
+  const sortedItems = React.useMemo(() => {
+    return [...items].sort((a: Vehicle, b: Vehicle) => {
+      const first = a[sortDescriptor.column as keyof Vehicle] as number;
+      const second = b[sortDescriptor.column as keyof Vehicle] as number;
+      const cmp = first < second ? -1 : first > second ? 1 : 0;
+
+      return sortDescriptor.direction === "descending" ? -cmp : cmp;
+    });
+  }, [sortDescriptor, items]);
+
+  const renderCell = React.useCallback((vehicle: Vehicle, columnKey: React.Key) => {
+    const cellValue = vehicle[columnKey as keyof Vehicle];
+
+    switch (columnKey) {
+      case "mark":
+        return (
+          <User
+            avatarProps={{ radius: "lg", src: vehicle.avatar }}
+            description={vehicle.model + " " + vehicle.engineDisplacement + ", " + vehicle.manufactureYear}
+            name={cellValue}
+          />
+        );
+      case "registrationNumber":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-small capitalize">{cellValue}</p>
+            <p className="text-bold text-tiny capitalize text-default-400">{vehicle.type}</p>
+          </div>
+        );
+      case "status":
+        return (
+          <Chip className="capitalize" color={statusColorMap[vehicle.status]} size="sm" variant="flat">
+            {replaceUnderscore(String(cellValue))}
+          </Chip>
+        );
+      case "actions":
+        return (
+          <div className="relative flex items-center">
+            <Tooltip content="Details">
+              <Link href={`vehicles/${vehicle.id}`}>
+                <Button isIconOnly variant="light" size="sm" className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                  <EyeIcon />
+                </Button>
+              </Link>
+            </Tooltip>
+            <Tooltip content="Edit vehicle">
+              <Link href={`vehicles/edit-vehicle/${vehicle.id}`}>
+                <Button isIconOnly variant="light" size="sm" className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                  <EditIcon />
+                </Button>
+              </Link>
+            </Tooltip>
+            <Tooltip color="danger" content="Delete vehicle">
+              <Button
+                onPress={() => {
+                  setSelectedId(vehicle.id);
+                  setShowModal(true);
+                  console.log("selectedId: ", selectedId, " vehicleId: ", vehicle.id, " showModal: ", showModal);
+                }}
+                isIconOnly
+                size="sm"
+                variant="light"
+                className="text-lg text-danger cursor-pointer active:opacity-50"
+              >
+                <DeleteIcon />
+              </Button>
+            </Tooltip>
+          </div>
+        );
+      default:
+        return cellValue;
+    }
+  }, []);
+
+  const onNextPage = React.useCallback(() => {
+    if (page < pages) {
+      setPage(page + 1);
+    }
+  }, [page, pages]);
+
+  const onPreviousPage = React.useCallback(() => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  }, [page]);
+
+  const onRowsPerPageChange = React.useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setRowsPerPage(Number(e.target.value));
+    setPage(1);
+  }, []);
+
+  const onSearchChange = React.useCallback((value?: string) => {
+    if (value) {
+      setFilterValue(value);
+      setPage(1);
+    } else {
+      setFilterValue("");
+    }
+  }, []);
+
+  const onClear = React.useCallback(() => {
+    setFilterValue("")
+    setPage(1)
+  }, [])
+
+  const topContent = React.useMemo(() => {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="flex justify-between gap-3 items-end">
+          <Input
+            isClearable
+            className="w-full sm:max-w-[44%]"
+            placeholder="Search by mark, model or registration number..."
+            startContent={<SearchIcon />}
+            value={filterValue}
+            onClear={() => onClear()}
+            onValueChange={onSearchChange}
+          />
+          <div className="flex gap-3">
+            <Dropdown>
+              <DropdownTrigger className="hidden sm:flex">
+                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                  Status
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Table Columns"
+                closeOnSelect={false}
+                selectedKeys={statusFilter}
+                selectionMode="multiple"
+                onSelectionChange={setStatusFilter}
+              >
+                {statusOptions.map((status) => (
+                  <DropdownItem key={status.uid} className="capitalize">
+                    {capitalize(status.name)}
+                  </DropdownItem>
                 ))}
-          </tbody>
-        </table>
+              </DropdownMenu>
+            </Dropdown>
+            <Dropdown>
+              <DropdownTrigger className="hidden sm:flex">
+                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                  Columns
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Table Columns"
+                closeOnSelect={false}
+                selectedKeys={visibleColumns}
+                selectionMode="multiple"
+                onSelectionChange={setVisibleColumns}
+              >
+                {columns.map((column) => (
+                  <DropdownItem key={column.uid} className="capitalize">
+                    {capitalize(column.name)}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </Dropdown>
+            <Link href="/vehicles/add-new-vehicle">
+              <Button color="primary" endContent={<PlusIcon />}>
+                Add New
+              </Button>
+            </Link>
+          </div>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-default-400 text-small">Total {vehicles.length} vehicles</span>
+          <label className="flex items-center text-default-400 text-small">
+            Rows per page:
+            <select
+              className="bg-transparent outline-none text-default-400 text-small"
+              onChange={onRowsPerPageChange}
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+            </select>
+          </label>
+        </div>
+      </div>
+    );
+  }, [
+    filterValue,
+    statusFilter,
+    visibleColumns,
+    onSearchChange,
+    onRowsPerPageChange,
+    vehicles.length,
+    hasSearchFilter,
+  ]);
+
+  const bottomContent = React.useMemo(() => {
+    return (
+      <div className="py-2 px-2 flex justify-between items-center">
+        <span className="w-[30%] text-small text-default-400">
+          {selectedKeys === "all"
+            ? "All items selected"
+            : `${selectedKeys.size} of ${filteredItems.length} selected`}
+        </span>
+        <Pagination
+          isCompact
+          showControls
+          showShadow
+          color="primary"
+          page={page}
+          total={pages}
+          onChange={setPage}
+        />
+        <div className="hidden sm:flex w-[30%] justify-end gap-2">
+          <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onPreviousPage}>
+            Previous
+          </Button>
+          <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onNextPage}>
+            Next
+          </Button>
+        </div>
+      </div>
+    );
+  }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+
+  return isLoading
+    ?
+    <div className="w-full h-56 flex justify-center items-center">
+      <Spinner size="lg" />
+    </div>
+    : (
+      <>
+        <Table
+          aria-label="Example table with custom cells, pagination and sorting"
+          isHeaderSticky
+          bottomContent={bottomContent}
+          bottomContentPlacement="outside"
+          classNames={{
+            wrapper: "max-h-[512px]",
+          }}
+          // selectedKeys={selectedKeys}
+          // selectionMode="multiple"
+          sortDescriptor={sortDescriptor}
+          topContent={topContent}
+          topContentPlacement="outside"
+          onSelectionChange={setSelectedKeys}
+          onSortChange={setSortDescriptor}
+        >
+          <TableHeader columns={headerColumns}>
+            {(column) => (
+              <TableColumn
+                key={column.uid}
+                // align={column.uid === "actions" ? "center" : "start"}
+                allowsSorting={column.sortable}
+              >
+                {column.name}
+              </TableColumn>
+            )}
+          </TableHeader>
+          <TableBody emptyContent={"No vehicles found"} items={sortedItems}>
+            {(item) => (
+              <TableRow key={item.id}>
+                {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
         {showModal && (
           <ConfirmationModal
             title="Are you sure?"
@@ -266,7 +412,6 @@ export default function VehiclePage() {
             onCancel={() => setShowModal(false)}
           />
         )}
-      </div>
-    </div>
-  )
+      </>
+    );
 }

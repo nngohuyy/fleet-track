@@ -1,6 +1,11 @@
 "use client"
 
 import { useState } from "react";
+import {
+  DateInput,
+  Input,
+} from "@nextui-org/react";
+import { parseZonedDateTime, parseAbsoluteToLocal } from "@internationalized/date";
 import React from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -47,7 +52,7 @@ export default function AddNewVehicle() {
   const handleSubmit = async () => {
     try {
       await axios.post(tripAPI, tripData);
-  
+
       alert("Trip added successfully");
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -68,7 +73,7 @@ export default function AddNewVehicle() {
             value={vehicleId}
             onChange={(e) => setVehicleId(e.target.value)}
           /> */}
-          <VehicleDropdown onVehicleSelect={handleVehicleSelect}  />
+          <VehicleDropdown onVehicleSelect={handleVehicleSelect} />
           <DriverDropdown onDriverSelect={handleDriverSelect} />
         </div>
         <div className="grid grid-cols-2 gap-5">
@@ -84,15 +89,19 @@ export default function AddNewVehicle() {
           />
         </div>
         <div className="grid grid-cols-2 gap-5">
-          <InputField
-            label="Start time"
-            value={tripData.startTime}
-            onChange={(e) => setTripData({ ...tripData, startTime: e.target.value })}
+          <DateInput
+            label={"Start time"}
+            defaultValue={parseAbsoluteToLocal("2021-11-07T07:45:00Z")}
+            onChange={(date) => setTripData({ ...tripData, startTime: parseZonedDateTime(date.toString()).toString() })}
+            labelPlacement="outside"
           />
-          <InputField
-            label="End time"
-            value={tripData.endTime}
-            onChange={(e) => setTripData({ ...tripData, endTime: e.target.value })}
+          <DateInput
+            label={"End time"}
+            defaultValue={parseAbsoluteToLocal("2021-11-07T07:45:00Z")}
+            onChange={(date) => setTripData({ ...tripData, endTime: parseZonedDateTime(date.toString()).toString() })}
+            isInvalid={tripData.endTime < tripData.startTime}
+            errorMessage="End time must be after start time."
+            labelPlacement="outside"
           />
         </div>
         <InputField

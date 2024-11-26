@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import API from '@/database/apiList';
 import Button from '@/components/Button/Button';
 import Link from 'next/link';
+import { Spinner } from '@nextui-org/react';
 
 ring.register('spinner-ring');
 
@@ -55,13 +56,9 @@ export default function VehicleDetailsPage() {
 
   return (
     isLoading ? (
-      <spinner-ring
-        size="40"
-        stroke="5"
-        bg-opacity="0"
-        speed="2"
-        color="black"
-      ></spinner-ring>
+      <div className='w-full h-56 flex items-center justify-center'>
+        <Spinner size='lg'/>
+      </div>
     ) : (
       <div>
         <h1 className="text-xl font-semibold">Vehicle Details</h1>

@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-page-custom-font */
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { NextUIProvider } from "@nextui-org/react"; // Import the ThemeProvider
 import "./globals.css";
 import SideBar from "@/components/SideBar/SideBar";
 
@@ -36,24 +37,26 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <script
-          type="module"
-          defer
-          src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/spiral.js"
-        ></script>
-        <div className="flex h-screen">
-          {/* Sidebar with fixed position */}
-          <aside className="fixed top-0 left-0 w-64 h-full">
-            <SideBar />
-          </aside>
+        {/* Add NextUIProvider */}
+        <NextUIProvider>
+          <script
+            type="module"
+            defer
+            src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/spiral.js"
+          ></script>
+          <div className="flex h-screen">
+            {/* Sidebar with fixed position */}
+            <aside className="fixed top-0 left-0 w-64 h-full">
+              <SideBar />
+            </aside>
 
-          {/* Main content area, with padding to account for the fixed sidebar */}
-          <main className="flex-grow ml-64 h-full overflow-y-auto pb-8">
-            {children}
-          </main>
-        </div>
+            {/* Main content area, with padding to account for the fixed sidebar */}
+            <main className="flex-grow ml-64 h-full overflow-y-auto pb-8">
+              {children}
+            </main>
+          </div>
+        </NextUIProvider>
       </body>
     </html>
   );
 }
-

@@ -1,96 +1,62 @@
-const vehicleList = [
+const columns = [
+  {name: "ID", uid: "id", sortable: true},
+  {name: "MARK", uid: "mark", sortable: true}, // {mark} : {mark + model + engineDisplacement + manufactureYear}
+  {name: "REGISTRATION NUMBER", uid: "registrationNumber", sortable: true}, // {registrationNumber} : {type}
+  {name: "ENGINE NUMBER", uid: "engineNumber"},
+  {name: "VIN NUMBER", uid: "vinNumber"},
+  {name: "CHASSIS NUMBER", uid: "chassisNumber"},
+  {name: "MANUFACTURE COUNTRY", uid: "manufactureCountry"}, // {manufactureCountry} : {manufactureYear}
+  {name: "INSPECTION REPORT NUMBER", uid: "inspectionReportNumber"}, // {inspectionReportNumber} : {dateOfIssue} - {validUntil}
+  {name: "STATUS", uid: "status", sortable: true},
+  {name: "ACTIONS", uid: "actions"},
+];
+
+const statusOptions = [
+  {name: "Available", uid: "available"},
+  {name: "In use", uid: "in_use"},
+  {name: "Under maintenance", uid: "under_maintenance"},
+];
+
+const vehicles = [
   {
-    id: "433KME4D",
+    id: "1",
     registrationNumber: "51K-12345",
     type: "Car",
-    mark: "Toyota",
-    typeOfFuel: "Gasoline",
-    engineDisplacement: 2.0,
-    vinNumber: "1234567890",
-    model: "Camry",
-    manufactureYear: 2021,
-    manufactureCountry: "Japan",
-  },
-  {
-    id: "433KME4D",
-    registrationNumber: "51K-54321",
-    type: "Car",
     mark: "Honda",
+    engineNumber: "123ABC-456DEF",
     typeOfFuel: "Gasoline",
     engineDisplacement: 1.8,
     vinNumber: "0987654321",
     model: "Civic",
+    chassisNumber: "1234567890",
     manufactureYear: 2020,
     manufactureCountry: "Japan",
+    inspectionReportNumber: "962.790.0557 x48624",
+    dateOfIssue: "2024-01-01T17:01:53.707Z",
+    validUntil: "2027-01-01T10:21:43.295Z",
+    status: "available",
+    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
   },
   {
-    id: "433KME4D",
-    registrationNumber: "51L-450.39",
+    id: "2",
+    registrationNumber: "51K-54321",
     type: "Car",
     mark: "Hyundai",
+    engineNumber: "123ABC-456DEF",
     typeOfFuel: "Gasoline",
     engineDisplacement: 2.0,
     vinNumber: "1234509876",
     model: "Elantra",
+    chassisNumber: "1234567890",
     manufactureYear: 2019,
     manufactureCountry: "Korea",
+    inspectionReportNumber: "962.790.0557 x48624",
+    dateOfIssue: "2024-01-01T17:01:53.707Z",
+    validUntil: "2027-01-01T10:21:43.295Z",
+    status: "available",
+    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
   },
-  {
-    id: "433KME4D",
-    registrationNumber: "51M-54321",
-    type: "Car",
-    mark: "Mazda",
-    typeOfFuel: "Gasoline",
-    engineDisplacement: 2.5,
-    vinNumber: "0987654321",
-    model: "CX-5",
-    manufactureYear: 2020,
-    manufactureCountry: "Japan",
-  },
-  {
-    id: "433KME4D",
-    registrationNumber: "51N-54321",
-    type: "Car",
-    mark: "Ford",
-    typeOfFuel: "Gasoline",
-    engineDisplacement: 2.3,
-    vinNumber: "0987654321",
-    model: "Ranger",
-    manufactureYear: 2020,
-    manufactureCountry: "USA",
-  },
-]
+];
 
-const columns = [
-  {
-    key: "id",
-    title: "ID",
-  },
-  {
-    key: "registrationNumber",
-    title: "Registration Number", // 51K-12345, 51K-54321, etc.
-  },
-  {
-    key: "status",
-    title: "Status", // default: available; in use, under maintenance
-  },
-  {
-    key: "type",
-    title: "Type", // car, truck, motorcycle, etc.
-  },
-  {
-    key: "mark",
-    title: "Mark", // Toyota, Honda, etc.
-  },
-  {
-    key: "model",
-    title: "Model", // Camry, Civic, etc.
-  },
-  {
-    key: "action",
-    title: "Action",
-  }
-]
-
-const data = { vehicleList, columns };
-export default data;
+export default vehicles;
+export {columns, vehicles, statusOptions};

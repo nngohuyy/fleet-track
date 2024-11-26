@@ -37,3 +37,12 @@ body {
     'opsz' 18;
   font-family: 'Material Symbols Rounded';
 }
+
+#sidebar {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.5),
+    rgba(255,255,255,0.5)),
+    url("https://w0.peakpx.com/wallpaper/276/572/HD-wallpaper-gradient-minimalism-blue-turquise.jpg")
+  ;
+
+}

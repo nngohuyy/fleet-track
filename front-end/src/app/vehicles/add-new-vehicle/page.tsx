@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState } from "react";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useForm, Controller } from "react-hook-form";
 import InputField from "@/components/InputField/InputField";
-import Button from "@/components/Button/Button";
+import { Button } from "@nextui-org/react";
 import API from "@/database/apiList";
 import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 
@@ -12,54 +12,45 @@ export default function AddNewVehicle() {
   const vehicleAPI = API.vehicleList;
   const router = useRouter();
   const [apiError, setApiError] = useState("");
-
-  const [registrationNumber, setRegistrationNumber] = useState("");
-  const [type, setType] = useState("");
-  const [mark, setMark] = useState("");
-  const [engineNumber, setEngineNumber] = useState("");
-  const [typeOfFuel, setTypeOfFuel] = useState("");
-  const [engineDisplacement, setEngineDisplacement] = useState("");
-  const [vinNumber, setVinNumber] = useState("");
-  const [model, setModel] = useState("");
-  const [chassisNumber, setChassisNumber] = useState("");
-  const [manufactureYear, setManufactureYear] = useState("");
-  const [manufactureCountry, setManufactureCountry] = useState("");
-  const [inspectionReportNumber, setInspectionReportNumber] = useState("");
-  const [dateOfIssue, setDateOfIssue] = useState("");
-  const [validUntil, setValidUntil] = useState("");
-  const [status, setStatus] = useState("available");
-
   const [showModal, setShowModal] = useState(false);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      registrationNumber: "",
+      type: "",
+      mark: "",
+      engineNumber: "",
+      typeOfFuel: "",
+      engineDisplacement: "",
+      vinNumber: "",
+      model: "",
+      chassisNumber: "",
+      manufactureYear: "",
+      manufactureCountry: "",
+      inspectionReportNumber: "",
+      dateOfIssue: "",
+      validUntil: "",
+      status: "available",
+    },
+  });
 
   const handleConfirmCancel = () => {
     setShowModal(false);
     router.push("/vehicles");
-  }
+  };
 
-  const handleSubmit = async () => {
+  const onSubmit = async (data: any) => {
     try {
       const response = await fetch(vehicleAPI, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          registrationNumber,
-          type,
-          mark,
-          engineNumber,
-          typeOfFuel,
-          engineDisplacement,
-          vinNumber,
-          model,
-          chassisNumber,
-          manufactureYear,
-          manufactureCountry,
-          inspectionReportNumber,
-          dateOfIssue,
-          validUntil,
-          status,
-        }),
+        body: JSON.stringify(data),
       });
 
       if (!response.ok) {
@@ -74,146 +65,182 @@ export default function AddNewVehicle() {
         setApiError("An unknown error occurred");
       }
     }
-  }
+  };
 
   return (
     <div className="flex flex-col gap-9">
       {apiError && <p>{apiError}</p>}
-      <form onSubmit={handleSubmit} className="inline-flex w-full flex-col gap-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="inline-flex w-full flex-col gap-6">
         <div className="grid grid-cols-2 gap-5">
           <div className="inline-flex flex-col gap-6">
-            <InputField
-              label="Registration number"
-              value={registrationNumber}
-              onChange={(e) => setRegistrationNumber(e.target.value)}
+            <Controller
+              name="registrationNumber"
+              control={control}
+              rules={{
+                required: "Registration number is required",
+                pattern: {
+                  value: /^\d{2}[A-Z]-\d{3}\.\d{2}$/,
+                  message: "Invalid registration number format. Use '51K-123.45'.",
+                },
+              }}
+              render={({ field }) => (
+                <div>
+                  <InputField label="Registration number" {...field} />
+                  {errors.registrationNumber && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.registrationNumber.message}
+                    </p>
+                  )}
+                </div>
+              )}
             />
             <div className="w-full inline-flex flex-row gap-4">
-              <InputField
-                label="Type"
-                value={type}
-                onChange={(e) => setType(e.target.value)}
+              <Controller
+                name="type"
+                control={control}
+                render={({ field }) => <InputField label="Type" {...field} />}
               />
-              <InputField
-                label="Mark"
-                value={mark}
-                onChange={(e) => setMark(e.target.value)}
+              <Controller
+                name="mark"
+                control={control}
+                render={({ field }) => <InputField label="Mark" {...field} />}
               />
             </div>
-            <InputField
-              label="Engine number"
-              value={engineNumber}
-              onChange={(e) => setEngineNumber(e.target.value)}
+            <Controller
+              name="engineNumber"
+              control={control}
+              render={({ field }) => <InputField label="Engine number" {...field} />}
             />
             <div className="w-full inline-flex flex-row gap-4">
-              <InputField
-                label="Type of fuel"
-                value={typeOfFuel}
-                onChange={(e) => setTypeOfFuel(e.target.value)}
+              <Controller
+                name="typeOfFuel"
+                control={control}
+                render={({ field }) => <InputField label="Type of fuel" {...field} />}
               />
-              <InputField
-                label="Engine displacement"
-                value={engineDisplacement}
-                onChange={(e) => setEngineDisplacement(e.target.value)}
+              <Controller
+                name="engineDisplacement"
+                control={control}
+                render={({ field }) => (
+                  <InputField label="Engine displacement" {...field} />
+                )}
               />
             </div>
           </div>
           <div className="inline-flex flex-col gap-6">
-            <InputField
-              label="VIN number"
-              value={vinNumber}
-              onChange={(e) => setVinNumber(e.target.value)}
+            <Controller
+              name="vinNumber"
+              control={control}
+              rules={{
+                required: "VIN number is required",
+                pattern: {
+                  value: /^[A-HJ-NPR-Z0-9]{17}$/,
+                  message: "Invalid VIN number. Ensure it is 17 characters and excludes I, O, Q.",
+                },
+              }}
+              render={({ field }) => (
+                <div>
+                  <InputField label="VIN number" {...field} />
+                  {errors.vinNumber && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.vinNumber.message}
+                    </p>
+                  )}
+                </div>
+              )}
             />
-            <InputField
-              label="Model"
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
+            <Controller
+              name="model"
+              control={control}
+              render={({ field }) => <InputField label="Model" {...field} />}
             />
-            <InputField
-              label="Chassis number"
-              value={chassisNumber}
-              onChange={(e) => setChassisNumber(e.target.value)}
+            <Controller
+              name="chassisNumber"
+              control={control}
+              render={({ field }) => (
+                <InputField label="Chassis number" {...field} />
+              )}
             />
             <div className="w-full inline-flex flex-row gap-4 items-end">
-              <InputField
-                label="Manufacture"
-                placeholder="Year"
-                value={manufactureYear}
-                onChange={(e) => setManufactureYear(e.target.value)}
+              <Controller
+                name="manufactureYear"
+                control={control}
+                render={({ field }) => (
+                  <InputField label="Manufacture" placeholder="Year" {...field} />
+                )}
               />
-              <InputField
-                label=""
-                placeholder="Country"
-                value={manufactureCountry}
-                onChange={(e) => setManufactureCountry(e.target.value)}
+              <Controller
+                name="manufactureCountry"
+                control={control}
+                render={({ field }) => (
+                  <InputField label="" placeholder="Country" {...field} />
+                )}
               />
             </div>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-5">
-          <InputField
-            label="Inspection report number"
-            value={inspectionReportNumber}
-            onChange={(e) => setInspectionReportNumber(e.target.value)}
+          <Controller
+            name="inspectionReportNumber"
+            control={control}
+            render={({ field }) => (
+              <InputField label="Inspection report number" {...field} />
+            )}
           />
           <div className="w-full inline-flex flex-row gap-4">
-            <InputField
-              label="Date of issue"
-              value={dateOfIssue}
-              onChange={(e) => setDateOfIssue(e.target.value)}
+            <Controller
+              name="dateOfIssue"
+              control={control}
+              render={({ field }) => (
+                <InputField label="Date of issue" {...field} />
+              )}
             />
-            <InputField
-              label="Valid until"
-              value={validUntil}
-              onChange={(e) => setValidUntil(e.target.value)}
+            <Controller
+              name="validUntil"
+              control={control}
+              render={({ field }) => <InputField label="Valid until" {...field} />}
             />
+          </div>
+        </div>
+        <div className="inline-flex w-full flex-row justify-between">
+          <Button
+            variant="bordered"
+            size="md"
+            radius="full"
+            startContent={<span className="material-symbols-rounded">document_scanner</span>}
+            onClick={() => { }}
+          >
+            Scan inspection certificate
+          </Button>
+          <div className="inline-flex flex-row gap-2">
+            <Button
+              variant="light"
+              color="danger"
+              size="md"
+              radius="full"
+              onClick={() => setShowModal(true)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="solid"
+              color="primary"
+              size="md"
+              radius="full"
+              type="submit"
+            >
+              Add vehicle
+            </Button>
+            {showModal && (
+              <ConfirmationModal
+                title="Are you sure?"
+                message="Do you really want to cancel the adding process? This action cannot be undone."
+                onConfirm={() => handleConfirmCancel()}
+                onCancel={() => setShowModal(false)}
+              />
+            )}
           </div>
         </div>
       </form>
-      <div className="inline-flex w-full flex-row justify-between">
-        <Button
-          variant="outline"
-          // color="success"
-          size="md"
-          radius="full"
-          startContent={<span className="material-symbols-rounded">document_scanner</span>}
-          // isFullWidth
-          isDisabled={false}
-          onClick={() => { }}
-        >
-          Scan inspection certificate
-        </Button>
-
-        <div className="inline-flex flex-row gap-2">
-          <Button
-            variant="ghost"
-            color="error"
-            size="md"
-            radius="full"
-            isDisabled={false}
-            onClick={() => setShowModal(true)}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="solid"
-            color="primary"
-            size="md"
-            radius="full"
-            isDisabled={false}
-            onClick={handleSubmit}
-          >
-            Add vehicle
-          </Button>
-          {showModal && (
-            <ConfirmationModal
-              title="Are you sure?"
-              message="Do you really want to cancel the adding process? This action cannot be undone."
-              onConfirm={() => handleConfirmCancel()}
-              onCancel={() => setShowModal(false)}
-            />
-          )}
-        </div>
-      </div>
     </div>
   );
 }
