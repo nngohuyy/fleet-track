@@ -17,7 +17,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Inter, Helvetica, sans-serif;
+  /* font-family: Helvetica, sans-serif; */
 }
 
 .material-symbols-rounded {
@@ -42,7 +42,7 @@ body {
   background-image:
     linear-gradient(rgba(255,255,255,0.5),
     rgba(255,255,255,0.5)),
-    url("https://w0.peakpx.com/wallpaper/276/572/HD-wallpaper-gradient-minimalism-blue-turquise.jpg")
+    url("https://img.freepik.com/free-vector/pastel-gradient-blur-vector-background_53876-169261.jpg?semt=ais_hybrid")
   ;
 
 }

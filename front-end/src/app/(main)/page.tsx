@@ -4,7 +4,6 @@ import { Button, Spinner } from "@nextui-org/react";
 import Link from "next/link";
 import {useEffect, useState} from "react";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 
 import {
   HiOutlineTruck,
@@ -17,7 +16,7 @@ const fetchUserName = async () => {
     const token = document.cookie.replace(
       /(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/,
       "$1"
-    ); // Extract the token from cookies
+    );
 
     const response = await axios.get("http://localhost:5000/api/users/", {
       headers: { Authorization: `Bearer ${token}` },
@@ -49,13 +48,13 @@ export default function Home() {
       <h1 className="py-14 font-black text-4xl">Welcome back, {userName}!</h1>
       <div className="grid grid-cols-3 gap-4 h-3/4">
         <Link href="/vehicles">
-          <Button className="w-full h-full flex flex-col gap-4 text-4xl" startContent={<HiOutlineTruck size={56} />}>Vehicles' management</Button>
+          <Button className="w-full h-full flex flex-col gap-4 text-4xl" startContent={<HiOutlineTruck size={56} />}>Vehicles&apos; management</Button>
         </Link>
         <Link href={`/drivers`} className="disabled">
-          <Button className="w-full h-full flex flex-col gap-4 text-4xl" isDisabled startContent={<HiOutlineUser size={56} />}>Drivers' management</Button>
+          <Button className="w-full h-full flex flex-col gap-4 text-4xl" startContent={<HiOutlineUser size={56} />}>Drivers&apos; management</Button>
         </Link>
         <Link href="/trips">
-          <Button className="w-full h-full flex flex-col gap-4 text-4xl" startContent={<HiOutlineMap size={56} />}>Trips' management</Button>
+          <Button className="w-full h-full flex flex-col gap-4 text-4xl" startContent={<HiOutlineMap size={56} />}>Trips&apos; management</Button>
         </Link>
       </div>
     </div>

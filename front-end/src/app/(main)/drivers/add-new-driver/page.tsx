@@ -24,7 +24,7 @@ export default function AddNewDriver() {
 
   const handleConfirmCancel = () => {
     setShowModal(false);
-    router.push("/trips");
+    router.push("/drivers");
   }
 
   const handleSubmit = async () => {

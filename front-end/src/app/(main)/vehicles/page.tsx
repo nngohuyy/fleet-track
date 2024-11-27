@@ -70,7 +70,7 @@ export default function VehiclePage() {
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        const response = await axios.get(API.vehicleList);
+        const response = await axios.get(API.vehicleList.local);
         setVehicles(response.data);
       } catch (error) {
         if (error instanceof Error) {
@@ -80,18 +80,19 @@ export default function VehiclePage() {
         }
       } finally {
         setIsLoading(false);
+        console.log("vehicles: ", vehicles);
       }
     };
 
     fetchVehicles();
-  }, [API.vehicleList]);
+  });
 
   const handleDelete = async () => {
     if (!selectedId) return;
     setIsLoading(true);
     try {
-      await axios.delete(`${API.vehicleList}/${selectedId}`);
-      setVehicles(vehicles.filter((vehicle) => vehicle.id !== selectedId));
+      await axios.delete(`${API.vehicleList.local}/${selectedId}`);
+      setVehicles(vehicles.filter((vehicle) => vehicle._id !== selectedId));
     } catch (error) {
       setApiError(error instanceof Error ? error.message : "An unknown error occurred");
     } finally {
@@ -128,7 +129,7 @@ export default function VehiclePage() {
     }
 
     return filteredvehicles;
-  }, [vehicles, filterValue, statusFilter]);
+  });
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -156,7 +157,7 @@ export default function VehiclePage() {
       case "mark":
         return (
           <User
-            avatarProps={{ radius: "lg", src: vehicle.avatar }}
+            avatarProps={{ radius: "lg", src: vehicle.image }}
             description={vehicle.model + " " + vehicle.engineDisplacement + ", " + vehicle.manufactureYear}
             name={cellValue}
           />
@@ -178,14 +179,14 @@ export default function VehiclePage() {
         return (
           <div className="relative flex items-center">
             <Tooltip content="Details">
-              <Link href={`vehicles/${vehicle.id}`}>
+              <Link href={`vehicles/${vehicle._id}`}>
                 <Button isIconOnly variant="light" size="sm" className="text-lg text-default-400 cursor-pointer active:opacity-50">
                   <EyeIcon />
                 </Button>
               </Link>
             </Tooltip>
             <Tooltip content="Edit vehicle">
-              <Link href={`vehicles/edit-vehicle/${vehicle.id}`}>
+              <Link href={`vehicles/edit-vehicle/${vehicle._id}`}>
                 <Button isIconOnly variant="light" size="sm" className="text-lg text-default-400 cursor-pointer active:opacity-50">
                   <EditIcon />
                 </Button>
@@ -194,9 +195,9 @@ export default function VehiclePage() {
             <Tooltip color="danger" content="Delete vehicle">
               <Button
                 onPress={() => {
-                  setSelectedId(vehicle.id);
+                  setSelectedId(vehicle._id);
                   setShowModal(true);
-                  console.log("selectedId: ", selectedId, " vehicleId: ", vehicle.id, " showModal: ", showModal);
+                  console.log("selectedId: ", selectedId, " vehicleId: ", vehicle._id, " showModal: ", showModal);
                 }}
                 isIconOnly
                 size="sm"
@@ -301,7 +302,7 @@ export default function VehiclePage() {
               </DropdownMenu>
             </Dropdown>
             <Link href="/vehicles/add-new-vehicle">
-              <Button color="primary" endContent={<PlusIcon />}>
+              <Button color="primary" endContent={<PlusIcon  size={20}/>}>
                 Add New
               </Button>
             </Link>
@@ -398,7 +399,7 @@ export default function VehiclePage() {
           </TableHeader>
           <TableBody emptyContent={"No vehicles found"} items={sortedItems}>
             {(item) => (
-              <TableRow key={item.id}>
+              <TableRow key={item._id}>
                 {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
               </TableRow>
             )}

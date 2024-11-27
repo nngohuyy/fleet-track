@@ -55,11 +55,11 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex justify-center items-center bg-blue-50">
+    <main id="signUpScreen" className="min-h-screen flex justify-center items-center">
       <div className="bg-white shadow-md max-w-screen-xl px-10 pt-12 pb-10 w-full flex flex-col gap-10 rounded-[2.25rem]">
         <div>
           <Image
-            src="logo/logo-abbrvAsset 2.svg"
+            src="fleettrack.svg"
             alt="Vercel Logo"
             className="dark:invert"
             width={100}
@@ -70,7 +70,7 @@ export default function LoginPage() {
         <div className="flex flex-row">
           <div className="w-1/2">
             <h1 className="text-5xl">Sign up</h1>
-            <p className="mt-4">to continue to The Amazing Record Store</p>
+            <p className="mt-4">to continue to FleetTrack</p>
           </div>
           <div className="w-1/2 flex flex-col gap-4">
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">

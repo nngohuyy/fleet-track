@@ -81,3 +81,23 @@ body {
 .news-wrapper:hover>.news-image-container>.news-image {
   transform: scale(1.025);
 }
+
+#signInScreen {
+  background-image:
+    url("https://static.vecteezy.com/system/resources/previews/020/499/731/large_2x/abstract-color-gradient-orange-yellow-modern-blurred-background-template-with-elegant-design-concept-minimal-style-composition-smooth-soft-and-warm-bright-hipster-illustration-free-photo.jpg");
+  /* background fill */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  /* background fill */
+}
+
+#signUpScreen {
+  background-image:
+    url("https://mrwallpaper.com/images/hd/pastel-phone-orange-gradient-wu63ct8lnde966ax.jpg");
+  /* background fill */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  /* background fill */
+}

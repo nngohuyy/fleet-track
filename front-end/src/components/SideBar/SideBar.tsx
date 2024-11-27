@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from "@nextui-org/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import {
@@ -11,6 +12,7 @@ import {
   HiOutlineCog6Tooth,
   HiArrowRightOnRectangle,
 } from "react-icons/hi2";
+import { IoClose } from "react-icons/io5";
 
 type ButtonColor = "primary" | "default" | "secondary" | "success" | "warning" | "danger" | undefined;
 
@@ -34,7 +36,7 @@ const TopContent: { title: string; icon: JSX.Element; link: string; color: Butto
     icon: <HiOutlineUser size={24} />,
     link: "/drivers",
     color: "default",
-    isDisabled: true,
+    isDisabled: false,
   },
   {
     title: "Trips",
@@ -53,7 +55,7 @@ export default function SideBar() {
     router.push('/sign-in');
   };
 
-  const BottomContent = [
+  const BottomContent: { title: string; icon: JSX.Element; color: ButtonColor; isDisabled: boolean; handler: (() => void) | null }[] = [
     {
       title: "Settings",
       icon: <HiOutlineCog6Tooth size={24} />,
@@ -66,14 +68,24 @@ export default function SideBar() {
       icon: <HiArrowRightOnRectangle size={24} />,
       color: "danger",
       isDisabled: false,
-      handler: handleLogout, // Attach the log-out handler
+      handler: handleLogout,
     },
   ];
 
   return (
     <div id="sidebar" className="w-full h-full bg-[#F8FAFD] px-3 py-7 inline-flex flex-col justify-between">
       <div className="inline-flex flex-col gap-8">
-        <span className="material-symbols-rounded rounded-full w-fit px-4 py-2.5 hover:bg-[#DADADA]">close</span>
+        {/* <Button isIconOnly radius="full" variant="light" className="ml-1.5"><IoClose size={24}/></Button> */}
+        <Link href="/" className="w-fit">
+          <Image
+              src="fleettrack.svg"
+              alt="Vercel Logo"
+              className="dark:invert ml-4 hover:brightness-125"
+              width={56}
+              height={56}
+              priority
+            />
+        </Link>
         <div className="inline-flex flex-col">
           {TopContent.map((item, index) => (
             <Link href={item.link} key={index}>
@@ -84,7 +96,7 @@ export default function SideBar() {
                 variant="light"
                 color={item.color}
                 startContent={item.icon}
-                className="text-base gap-5 justify-start h-11"
+                className="text-base gap-5 justify-start h-11 hover:font-bold"
               >
                 {item.title}
               </Button>
@@ -102,8 +114,8 @@ export default function SideBar() {
             variant="light"
             color={item.color}
             startContent={item.icon}
-            className="text-base gap-5 justify-start h-11"
-            onClick={item.handler || undefined} // Attach handler if present
+            className="text-base gap-5 justify-start h-11 hover:font-bold"
+            onClick={item.handler || undefined}
           >
             {item.title}
           </Button>

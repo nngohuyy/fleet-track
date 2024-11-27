@@ -2,47 +2,27 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ring } from 'ldrs';
 import { useParams } from 'next/navigation';
 import API from '@/database/apiList';
 import Button from '@/components/Button/Button';
 import Link from 'next/link';
 import { Spinner } from '@nextui-org/react';
+import vehicles from '@/database/vehicleList';
+import { formatISODate } from '@/utils/utils';
 
-ring.register('spinner-ring');
-
-interface Vehicle {
-  id: string;
-  registrationNumber: string;
-  type: string;
-  mark: string;
-  engineNumber: string;
-  typeOfFuel: string;
-  engineDisplacement: number;
-  vinNumber: string;
-  model: string;
-  chassisNumber: string;
-  manufactureYear: number;
-  manufactureCountry: string;
-  inspectionReportNumber: string;
-  dateOfIssue: string;
-  validUntil: string;
-}
+type Vehicle = typeof vehicles[0];
 
 export default function VehicleDetailsPage() {
   const { id } = useParams();
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [apiError, setApiError] = useState("");
-  const vehicleAPI = API.vehicleList;
 
   useEffect(() => {
     const fetchVehicle = async () => {
       try {
-        const response = await axios.get(`${vehicleAPI}/${id}`);
+        const response = await axios.get(`${API.vehicleList.local}/${id}`);
         setVehicle(response.data);
-        setIsLoading(false);
-        console.log(response.data);
       } catch (error) {
         if (error instanceof Error) {
           setApiError(error.message);
@@ -50,9 +30,14 @@ export default function VehicleDetailsPage() {
           setApiError("An unknown error occurred");
         }
       }
+      finally {
+        setIsLoading(false);
+        console.log('Vehicle Details:', vehicle);
+      }
     };
+
     fetchVehicle();
-  }, [id, vehicleAPI]);
+  });
 
   return (
     isLoading ? (
@@ -66,7 +51,6 @@ export default function VehicleDetailsPage() {
         <div>
           {vehicle && (
             <>
-              <p><strong>ID:</strong> {vehicle.id}</p>
               <p><strong>Registration Number:</strong> {vehicle.registrationNumber}</p>
               <p><strong>Type:</strong> {vehicle.type}</p>
               <p><strong>Mark:</strong> {vehicle.mark}</p>
@@ -79,14 +63,16 @@ export default function VehicleDetailsPage() {
               <p><strong>Manufacture Year:</strong> {vehicle.manufactureYear}</p>
               <p><strong>Manufacture Country:</strong> {vehicle.manufactureCountry}</p>
               <p><strong>Inspection Report Number:</strong> {vehicle.inspectionReportNumber}</p>
-              <p><strong>Date of Issue:</strong> {vehicle.dateOfIssue}</p>
-              <p><strong>Valid Until:</strong> {vehicle.validUntil}</p>
+              <p><strong>Date of Issue:</strong> {formatISODate(vehicle.dateOfIssue)}</p>
+              <p><strong>Valid Until:</strong> {formatISODate(vehicle.validUntil)}</p>
+              <p><strong>Insurance Purchase Date:</strong> {formatISODate(vehicle.insurancePurchaseDate)}</p>
+              <p><strong>Insurance Expiration Date:</strong> {formatISODate(vehicle.insuranceExpirationDate)}</p>
             </>
           )}
         </div>
         <div className="mt-4">
           {vehicle && (
-            <Link href={`/vehicles/edit-vehicle/${vehicle.id}`}>
+            <Link href={`/vehicles/edit-vehicle/${vehicle._id}`}>
               <Button variant="outline" color="primary" size="md" radius="full">
                 Edit Vehicle
               </Button>

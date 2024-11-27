@@ -18,10 +18,12 @@ const vehicleSchema = new mongoose.Schema({
     validUntil: Date,
     insurancePurchaseDate: Date, // Ngày mua bảo hiểm
     insuranceExpirationDate: Date, // Ngày hết hạn bảo hiểm
-    image: {
-        data: Buffer,
-        contentType: String
-    },
+    // image: {
+    //     data: Buffer,
+    //     contentType: String
+    // },
+    image: String,
+    status: String,
     id: String,
     stt: Number
 });

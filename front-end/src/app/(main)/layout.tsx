@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import { NextUIProvider } from "@nextui-org/react"; // Import the ThemeProvider
 import "./globals.css";
 import SideBar from "@/components/SideBar/SideBar";
+import { Plus_Jakarta_Sans } from "next/font/google";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -15,6 +16,8 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
+
+const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "HCMUT Fleet Track",
@@ -35,7 +38,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={plusJakartaSans.className}
       >
         <NextUIProvider>
           <div className="flex h-screen">

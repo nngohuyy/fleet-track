@@ -95,7 +95,7 @@ export default function VehiclePage() {
     // Fetch Vehicles
     const fetchVehicles = async () => {
       try {
-        const response = await axios.get(API.vehicleList);
+        const response = await axios.get(API.vehicleList.local);
         setVehicles(response.data);
       } catch (error) {
         setApiError(error instanceof Error ? error.message : "An unknown error occurred");
@@ -122,7 +122,7 @@ export default function VehiclePage() {
 
   const getRegistrationNumber = (vehicleId: string) => {
     if (vehicles.length === 0) return "Loading...";
-    const vehicle = vehicles.find((vehicle) => vehicle.id === vehicleId);
+    const vehicle = vehicles.find((vehicle) => vehicle._id === vehicleId);
     return vehicle ? vehicle.registrationNumber : "Unknown";
   };
 
@@ -136,13 +136,13 @@ export default function VehiclePage() {
     if (!selectedId) return;
     setIsLoading(true);
     try {
-      await axios.delete(`${API.vehicleList}/${selectedId}`);
+      await axios.delete(`${API.tripList}/${selectedId}`);
       setTrips(trips.filter((trip) => trip.id !== selectedId));
     } catch (error) {
       setApiError(error instanceof Error ? error.message : "An unknown error occurred");
     } finally {
-      setSelectedId(null); // Clear it here, after all operations
-      setShowModal(false); // Close the modal after the operation
+      setSelectedId(null);
+      setShowModal(false);
       setIsLoading(false);
     }
   };
@@ -223,14 +223,14 @@ export default function VehiclePage() {
         return (
           <div className="relative flex items-center">
             <Tooltip content="Details">
-              <Link href={`vehicles/${vehicle.id}`}>
+              <Link href={`trips/${vehicle.id}`}>
                 <Button isIconOnly variant="light" size="sm" className="text-lg text-default-400 cursor-pointer active:opacity-50">
                   <EyeIcon />
                 </Button>
               </Link>
             </Tooltip>
             <Tooltip content="Edit vehicle">
-              <Link href={`vehicles/edit-vehicle/${vehicle.id}`}>
+              <Link href={`trips/edit-trip/${vehicle.id}`}>
                 <Button isIconOnly variant="light" size="sm" className="text-lg text-default-400 cursor-pointer active:opacity-50">
                   <EditIcon />
                 </Button>

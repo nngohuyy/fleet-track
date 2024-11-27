@@ -1,20 +1,18 @@
 const columns = [
   {name: "ID", uid: "id", sortable: true},
-  {name: "MARK", uid: "mark", sortable: true}, // {mark} : {mark + model + engineDisplacement + manufactureYear}
-  {name: "REGISTRATION NUMBER", uid: "registrationNumber", sortable: true}, // {registrationNumber} : {type}
-  {name: "ENGINE NUMBER", uid: "engineNumber"},
-  {name: "VIN NUMBER", uid: "vinNumber"},
-  {name: "CHASSIS NUMBER", uid: "chassisNumber"},
-  {name: "MANUFACTURE COUNTRY", uid: "manufactureCountry"}, // {manufactureCountry} : {manufactureYear}
-  {name: "INSPECTION REPORT NUMBER", uid: "inspectionReportNumber"}, // {inspectionReportNumber} : {dateOfIssue} - {validUntil}
-  {name: "STATUS", uid: "status", sortable: true},
-  {name: "ACTIONS", uid: "actions"},
+  {name: "Name", uid: "name", sortable: true},
+  {name: "ID Number", uid: "idNumber", sortable: true},
+  {name: "Sex", uid: "sex", sortable: true},
+  {name: "Date of Birth", uid: "dateOfBirth", sortable: true},
+  {name: "Home Address", uid: "homeAddress", sortable: true},
+  {name: "Phone Number", uid: "phoneNumber", sortable: true},
+  {name: "Driving Status", uid: "isDriving", sortable: true},
+  {name: "Actions", uid: "actions"},
 ];
 
 const statusOptions = [
+  {name: "Is Driving", uid: "is_driving"},
   {name: "Available", uid: "available"},
-  {name: "In use", uid: "in_use"},
-  {name: "Under maintenance", uid: "under_maintenance"},
 ];
 
 const drivers = [

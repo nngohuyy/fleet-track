@@ -21,10 +21,12 @@ exports.createVehicle = async (req, res) => {
             insurancePurchaseDate: req.body.insurancePurchaseDate, // Nhận từ FE
             insuranceExpirationDate: req.body.insuranceExpirationDate, // Nhận từ FE
             id: req.body.id,
-            image: req.file ? {
-                data: req.file.buffer,
-                contentType: req.file.mimetype
-            } : null
+            // image: req.file ? {
+            //     data: req.file.buffer,
+            //     contentType: req.file.mimetype
+            // } : null
+            image: req.body.image,
+            status: req.body.status,
         });        
         await newVehicle.save();
         res.status(201).send('Vehicle added successfully');
