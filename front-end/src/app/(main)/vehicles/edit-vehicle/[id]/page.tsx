@@ -31,7 +31,7 @@ interface Vehicle {
 
 export default function EditVehicle() {
   const { id } = useParams();
-  const vehicleAPI = API.vehicleList;
+  const vehicleAPI = API.vehicleList.local;
   const router = useRouter();
   const [apiError, setApiError] = useState("");
 
